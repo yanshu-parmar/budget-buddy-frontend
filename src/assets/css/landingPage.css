@@ -1,0 +1,55 @@
+/* LandingPage.css */
+
+body {
+    background-color: #000201;
+    color: #a2b2a7;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .landing-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  header {
+    text-align: center;
+    padding: 80px 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .landing-title {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #d3ba2c;
+    margin-bottom: 20px;
+  }
+  
+  .landing-description {
+    font-size: 1.2rem;
+    max-width: 600px;
+    color: #a2b2a7;
+    margin-bottom: 30px;
+  }
+  
+  .landing-button {
+    background-color: #1c8c3d;
+    color: white;
+    padding: 12px 24px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .landing-button:hover {
+    background-color: #178bab;
+  }
+  
