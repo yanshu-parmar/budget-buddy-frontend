@@ -1,66 +1,124 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { TextField, Button, Card, CardContent, Typography, Box } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { TextField, Button, Typography, Paper, Box, IconButton, InputAdornment } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import axios from "axios";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const Signup = () => {
-  const { register, handleSubmit, formState: { errors } } = useForm();
+export const Signup = () => {
+  const navigate = useNavigate();
+  const { register, handleSubmit } = useForm();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const onSubmit = (data) => {
-    console.log("Signing up...", data);
+  const togglePasswordVisibility = () => setShowPassword(!showPassword);
+  const toggleConfirmPasswordVisibility = () => setShowConfirmPassword(!showConfirmPassword);
+
+  const submitHandler = async (data) => {
+    if (data.password !== data.confirmPassword) {
+      toast.error("Passwords do not match!");
+      return;
+    }
+
+    try {
+      const res = await axios.post("/user/signup", data);
+      if (res.status === 201) {
+        toast.success("Signup Successful!");
+        navigate("/login");
+      }
+    } catch (error) {
+      console.error("Signup error", error.response?.data)
+      toast.error("Signup Failed. Please try again.");
+    }
   };
 
   return (
-    <Box 
-      display="flex" 
-      justifyContent="center" 
-      alignItems="center" 
-      minHeight="100vh" 
-      bgcolor="#F3F4F6"
-    >
-      <Card sx={{ maxWidth: 400, padding: 3, boxShadow: 3 }}>
-        <CardContent>
-          <Typography variant="h4" component="h2" textAlign="center" gutterBottom>
+    <Box sx={{ 
+      height: "100vh", 
+      width: "100vw", 
+      display: "flex", 
+      justifyContent: "center", 
+      alignItems: "center", 
+      backgroundColor: "#fff" 
+    }}>
+      <Paper elevation={10} sx={{ 
+        padding: 5, 
+        borderRadius: 3, 
+        width: "100%", 
+        maxWidth: 400, 
+        textAlign: "center", 
+        backgroundColor: "#fff", 
+        color: "#000" 
+      }}>
+        <Typography variant="h4" sx={{ fontWeight: "bold", color: "#00ADB5", mb: 3 }}>
+          Sign Up
+        </Typography>
+        <Box component="form" onSubmit={handleSubmit(submitHandler)} sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          <TextField
+            {...register("name", { required: true })}
+            label="Full Name"
+            variant="outlined"
+            fullWidth
+            sx={{ input: { color: "#fff" }, label: { color: "#b0b0b0" }, fieldset: { borderColor: "#b0b0b0" } }}
+          />
+          <TextField
+            {...register("email", { required: true })}
+            label="Email"
+            type="email"
+            variant="outlined"
+            fullWidth
+            sx={{ input: { color: "#fff" }, label: { color: "#b0b0b0" }, fieldset: { borderColor: "#b0b0b0" } }}
+          />
+          <TextField
+            {...register("password", { required: true })}
+            label="Password"
+            type={showPassword ? "text" : "password"}
+            variant="outlined"
+            fullWidth
+            sx={{ input: { color: "#fff" }, label: { color: "#b0b0b0" }, fieldset: { borderColor: "#b0b0b0" } }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={togglePasswordVisibility} sx={{ color: "#00ADB5" }}>
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+          <TextField
+            {...register("confirmPassword", { required: true })}
+            label="Confirm Password"
+            type={showConfirmPassword ? "text" : "password"}
+            variant="outlined"
+            fullWidth
+            sx={{ input: { color: "#fff" }, label: { color: "#b0b0b0" }, fieldset: { borderColor: "#b0b0b0" } }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={toggleConfirmPasswordVisibility} sx={{ color: "#00ADB5" }}>
+                    {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+          <Button type="submit" variant="contained" sx={{ backgroundColor: "#00ADB5", color: "#fff", fontWeight: "bold", "&:hover": { backgroundColor: "#008C9E" } }}>
             Sign Up
-          </Typography>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <TextField
-              fullWidth
-              label="Full Name"
-              variant="outlined"
-              margin="normal"
-              {...register("name", { required: "Full Name is required" })}
-              error={!!errors.name}
-              helperText={errors.name?.message}
-            />
-            <TextField
-              fullWidth
-              label="Email"
-              variant="outlined"
-              margin="normal"
-              {...register("email", { required: "Email is required" })}
-              error={!!errors.email}
-              helperText={errors.email?.message}
-            />
-            <TextField
-              fullWidth
-              label="Password"
-              type="password"
-              variant="outlined"
-              margin="normal"
-              {...register("password", { required: "Password is required" })}
-              error={!!errors.password}
-              helperText={errors.password?.message}
-            />
-            <Button 
-              type="submit" 
-              variant="contained" 
-              fullWidth 
-              sx={{ mt: 2, bgcolor: "#1E3A8A", "&:hover": { bgcolor: "#10B981" } }}
+          </Button>
+          <Typography variant="body2" sx={{ color: "#b0b0b0", mt: 2 }}>
+            Already have an account?{" "}
+            <span 
+              style={{ color: "#00ADB5", cursor: "pointer", fontWeight: "bold" }} 
+              onClick={() => navigate("/login")}
             >
-              Sign Up
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+              Login
+            </span>
+          </Typography>
+        </Box>
+      </Paper>
     </Box>
   );
 };

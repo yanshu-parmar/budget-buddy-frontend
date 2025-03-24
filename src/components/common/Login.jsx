@@ -1,66 +1,90 @@
-import axios from 'axios';
-import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
-import { Container, TextField, Button, Typography, Paper, Box } from '@mui/material';
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { TextField, Button, Typography, Paper, Box, IconButton, InputAdornment } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import axios from "axios";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const Login = () => {
   const navigate = useNavigate();
   const { register, handleSubmit } = useForm();
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
   const submitHandler = async (data) => {
     try {
       const res = await axios.post("/user/login", data);
-      console.log(res.data);
       if (res.status === 200) {
-        alert("Login Success");
+        toast.success("Login Successful!");
         localStorage.setItem("id", res.data.data._id);
         localStorage.setItem("role", res.data.data.roleId.name);
-        
+
         if (res.data.data.roleId.name === "USER") {
           navigate("/user");
+        } else {
+          navigate("/admin");
         }
       }
     } catch (error) {
-      console.error("Login Error:", error); // Logs full error object
-      alert("Login Failed");
+      toast.error("Login Failed. Please check your credentials.");
     }
   };
 
   return (
-    <Container maxWidth="sm" sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh" }}>
-      <Paper elevation={10} sx={{ padding: 4, borderRadius: 2, backgroundColor: "#10B981", color: "#fff", textAlign: "center" }}>
-        <Typography variant="h4" sx={{ fontWeight: "bold", color: "#d3ba2c", marginBottom: 2 }}>
-          LOGIN USER
+    <Box sx={{ 
+      height: "100vh", 
+      width: "100vw", 
+      display: "flex", 
+      justifyContent: "center", 
+      alignItems: "center", 
+      backgroundColor: "#121212" 
+    }}>
+      <Paper elevation={10} sx={{ 
+        padding: 5, 
+        borderRadius: 3, 
+        width: "100%", 
+        maxWidth: 400, 
+        textAlign: "center", 
+        backgroundColor: "#1E1E1E", 
+        color: "#fff" 
+      }}>
+        <Typography variant="h4" sx={{ fontWeight: "bold", color: "#00ADB5", mb: 3 }}>
+          Login
         </Typography>
         <Box component="form" onSubmit={handleSubmit(submitHandler)} sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-          <TextField
-            {...register("name", { required: true })}
-            label="Name"
-            variant="outlined"
-            fullWidth
-            sx={{ input: { color: "#fff" }, label: { color: "#a2b2a7" }, fieldset: { borderColor: "#a2b2a7" } }}
-          />
           <TextField
             {...register("email", { required: true })}
             label="Email"
             type="email"
             variant="outlined"
             fullWidth
-            sx={{ input: { color: "#fff" }, label: { color: "#a2b2a7" }, fieldset: { borderColor: "#a2b2a7" } }}
+            sx={{ input: { color: "#fff" }, label: { color: "#b0b0b0" }, fieldset: { borderColor: "#b0b0b0" } }}
           />
           <TextField
             {...register("password", { required: true })}
             label="Password"
-            type="password"
+            type={showPassword ? "text" : "password"}
             variant="outlined"
             fullWidth
-            sx={{ input: { color: "#fff" }, label: { color: "#a2b2a7" }, fieldset: { borderColor: "#a2b2a7" } }}
+            sx={{ input: { color: "#fff" }, label: { color: "#b0b0b0" }, fieldset: { borderColor: "#b0b0b0" } }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={togglePasswordVisibility} sx={{ color: "#00ADB5" }}>
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
           />
-          <Button type="submit" variant="contained" sx={{ backgroundColor: "#d3ba2c", color: "#000", fontWeight: "bold", '&:hover': { backgroundColor: "#178bab" } }}>
+          <Button type="submit" variant="contained" sx={{ backgroundColor: "#00ADB5", color: "#fff", fontWeight: "bold", "&:hover": { backgroundColor: "#008C9E" } }}>
             Login
           </Button>
         </Box>
       </Paper>
-    </Container>
+    </Box>
   );
 };
