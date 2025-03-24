@@ -30,7 +30,7 @@ export const Signup = () => {
       }
     } catch (error) {
       console.error("Signup error", error.response?.data)
-      toast.error("Signup Failed. Please try again.");
+      toast.error("Signup failed. Please try again.");
     }
   };
 
