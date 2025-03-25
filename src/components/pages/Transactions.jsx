@@ -84,6 +84,8 @@ const Transactions = () => {
         > Category
           <MenuItem value="">Select Category</MenuItem>
           <MenuItem value="Food">Food</MenuItem>
+          <MenuItem value="Transport">Transport</MenuItem>
+          <MenuItem value="Loan">Loan</MenuItem>
           <MenuItem value="Rent">Rent</MenuItem>
           <MenuItem value="Salary">Salary</MenuItem>
           <MenuItem value="Shopping">Shopping</MenuItem>
@@ -131,7 +133,7 @@ const Transactions = () => {
                   {transaction.type}
                 </Typography>
                 <Typography variant="body1" sx={{ fontWeight: "bold", color: "#00C49F" }}>
-                  Amount: ${transaction.amount}
+                  Amount: {transaction.amount}
                 </Typography>
                 <Typography variant="body2" sx={{ fontWeight: "bold", color: "#d3ba2c" }}>
                   Category: {transaction.category}

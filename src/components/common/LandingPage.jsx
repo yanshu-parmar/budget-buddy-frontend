@@ -1,42 +1,43 @@
-import { Box, Container, Typography, Button, Stack } from "@mui/material";
-// import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Container, Typography, Button, Box, AppBar } from "@mui/material";
+import Navbar from "../common/Navbar"; // Import Navbar
 import { useNavigate } from "react-router-dom";
 
 const LandingPage = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const [themeMode, setThemeMode] = useState("light");
+
+  // Toggle Theme Function
+  const toggleTheme = () => {
+    setThemeMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
+  };
+
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh", justifyContent: "center", alignItems: "center", bgcolor: "#00ADB5" }}>
-      {/* Navbar Section */}
-      {/* <Box sx={{display: "flex", color:"black"}}>
-        <Typography variant="h6" sx={{fontWeight: "bold", color: "#f4f6f8", mb: 2}}> hello</Typography>
-      </Box> */}
-      <Container sx={{ textAlign: "center" }}>
-        <Typography variant="h3" sx={{ fontWeight: "bold", color: "#f4f6f8", mb: 2 }}>
+    <AppBar position="static" sx={{ backgroundColor: themeMode === "dark" ? "#0B0F19" : "#fff", color: themeMode === "dark" ? "#fff" : "#000" }}>
+    <Box sx={{ backgroundColor: themeMode === "dark" ? "#0B0F19" : "#fff", minHeight: "100vh" }}>
+      {/* Navbar */}
+      <Navbar themeMode={themeMode} toggleTheme={toggleTheme} />
+
+      {/* Main Landing Page Content */}
+      <Container sx={{ textAlign: "center", paddingTop: "100px" }}>
+        <Typography variant="h2" sx={{ fontWeight: "bold", color: themeMode === "dark" ? "#fff" : "#000" }}>
           Welcome to Budget Buddy
         </Typography>
-        <Typography variant="h6" sx={{ color: "#f4f6f8", mb: 3 }}>
-          Take control of your finances with ease!
+        <Typography variant="h5" sx={{ color: themeMode === "dark" ? "#b0b0b0" : "#333", marginTop: 2 }}>
+          Your personal finance tracker made easy!
         </Typography>
 
-        {/* Buttons: Get Started & Login */}
-        <Stack direction="row" spacing={2} justifyContent="center">
-          <Button
-            variant="contained"
-            sx={{ backgroundColor: "#d3ba2c", color: "#000", fontWeight: "bold", "&:hover": { backgroundColor: "#178bab" } }}
-          onClick={() => navigate("/signup")}>
-            Get Started
-          </Button>
-
-          <Button
-            variant="contained"
-            sx={{ borderColor: "#d3ba2c", color: "#000", fontWeight: "bold", padding: "10px 20px", "&:hover": { backgroundColor: "#178bab" } }}
-            onClick={() => navigate("/login")}
-          >
-            Login
-          </Button>
-        </Stack>
+        <Button 
+          variant="contained" 
+          sx={{ marginTop: 4, backgroundColor: "#00ADB5", fontWeight: "bold", "&:hover": { backgroundColor: "#008C9E" } }} 
+          onClick={() => navigate("/signup")}
+        >
+          Get Started
+        </Button>
       </Container>
     </Box>
+    </AppBar>
+    
   );
 };
 

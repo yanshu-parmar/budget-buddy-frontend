@@ -1,6 +1,5 @@
 // import React from "react"
 import LandingPage from "./components/common/LandingPage"
-import { Login } from "./components/common/Login"
 import { Route, Routes, useLocation } from "react-router-dom"
 import Signup from "./components/common/Signup"
 import AdminLayout from "./components/layouts/AminLayout"
@@ -13,6 +12,8 @@ import UserProfile from "./components/user/UserProfile"
 import { useEffect } from "react"
 import PrivateRoutes from "./components/hooks/PrivateRoutes"
 import Home from "./components/common/Home"
+import Login from "./components/common/Login"
+import { AddBudget } from "./components/pages/AddBudget"
 
 
 const App = () => {
@@ -42,6 +43,7 @@ const App = () => {
         <Route path="/adminlayout" element={<AdminLayout />}></Route>
         <Route path="/dashboard" element={<Dashboard />}></Route>
         <Route path="/sidebar" element={<Sidebar />}></Route>
+        <Route path="/addbudgets" element={<AddBudget />}></Route>
       </Routes>
     </div>
   )

@@ -79,6 +79,8 @@ const Budgets = () => {
         >
           <MenuItem value="">Select Category</MenuItem>
           <MenuItem value="Food">Food</MenuItem>
+          <MenuItem value="Transport">Transport</MenuItem>
+          <MenuItem value="Loan">Loan</MenuItem>
           <MenuItem value="Rent">Rent</MenuItem>
           <MenuItem value="Salary">Salary</MenuItem>
           <MenuItem value="Shopping">Shopping</MenuItem>
@@ -130,13 +132,13 @@ const Budgets = () => {
                 <CardContent>
                   <Typography variant="h6">{budget.category}</Typography>
                   <Typography variant="body1" sx={{ color: "#00C49F" }}>
-                    Budget: ${budget.budget}
+                    Budget: {budget.budget}
                   </Typography>
                   <Typography variant="body1" sx={{ color: "#e53935" }}>
-                    Spent: ${budget.spent}
+                    Spent: {budget.spent}
                   </Typography>
                   <Typography variant="body1" sx={{ color: remaining >= 0 ? "#43a047" : "#e53935" }}>
-                    Remaining: ${remaining}
+                    Remaining: {remaining}
                   </Typography>
                   <Typography variant="body2" sx={{ color: "#d3ba2c", fontStyle: "italic" }}>
                     {budget.description}

@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { TextField, Button, Typography, Paper, Box, IconButton, InputAdornment } from "@mui/material";
+import { 
+  TextField, Button, Typography, Paper, Box, IconButton, InputAdornment 
+} from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export const Login = () => {
+const Login = () => {
   const navigate = useNavigate();
   const { register, handleSubmit } = useForm();
   const [showPassword, setShowPassword] = useState(false);
@@ -19,17 +21,11 @@ export const Login = () => {
       const res = await axios.post("/user/login", data);
       if (res.status === 200) {
         toast.success("Login Successful!");
-        localStorage.setItem("id", res.data.data._id);
-        localStorage.setItem("role", res.data.data.roleId.name);
-
-        if (res.data.data.roleId.name === "USER") {
-          navigate("/user");
-        } else {
-          navigate("/admin");
-        }
+        navigate("/dashboard");
       }
     } catch (error) {
-      toast.error("Login Failed. Please check your credentials.");
+      console.error("Login error", error.response?.data);
+      toast.error("Invalid credentials. Please try again.");
     }
   };
 
@@ -40,7 +36,7 @@ export const Login = () => {
       display: "flex", 
       justifyContent: "center", 
       alignItems: "center", 
-      backgroundColor: "#121212" 
+      backgroundColor: "#fff" 
     }}>
       <Paper elevation={10} sx={{ 
         padding: 5, 
@@ -48,8 +44,8 @@ export const Login = () => {
         width: "100%", 
         maxWidth: 400, 
         textAlign: "center", 
-        backgroundColor: "#1E1E1E", 
-        color: "#fff" 
+        backgroundColor: "#fff", 
+        color: "#000" 
       }}>
         <Typography variant="h4" sx={{ fontWeight: "bold", color: "#00ADB5", mb: 3 }}>
           Login
@@ -61,7 +57,7 @@ export const Login = () => {
             type="email"
             variant="outlined"
             fullWidth
-            sx={{ input: { color: "#fff" }, label: { color: "#b0b0b0" }, fieldset: { borderColor: "#b0b0b0" } }}
+            sx={{ input: { color: "#000" }, label: { color: "#b0b0b0" }, fieldset: { borderColor: "#b0b0b0" } }}
           />
           <TextField
             {...register("password", { required: true })}
@@ -69,7 +65,7 @@ export const Login = () => {
             type={showPassword ? "text" : "password"}
             variant="outlined"
             fullWidth
-            sx={{ input: { color: "#fff" }, label: { color: "#b0b0b0" }, fieldset: { borderColor: "#b0b0b0" } }}
+            sx={{ input: { color: "#000" }, label: { color: "#b0b0b0" }, fieldset: { borderColor: "#b0b0b0" } }}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
@@ -83,8 +79,19 @@ export const Login = () => {
           <Button type="submit" variant="contained" sx={{ backgroundColor: "#00ADB5", color: "#fff", fontWeight: "bold", "&:hover": { backgroundColor: "#008C9E" } }}>
             Login
           </Button>
+          <Typography variant="body2" sx={{ color: "#b0b0b0", mt: 2 }}>
+            Don&apos;t have an account?{" "}
+            <span 
+              style={{ color: "#00ADB5", cursor: "pointer", fontWeight: "bold" }} 
+              onClick={() => navigate("/signup")}
+            >
+              Sign Up
+            </span>
+          </Typography>
         </Box>
       </Paper>
     </Box>
   );
 };
+
+export default Login;
