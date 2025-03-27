@@ -3,7 +3,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-export const HordingList = () => {
+export const ExpenceList = () => {
     const columns =[
         {field:"_id",headerName:"ID",width:90},
         {field:"expenceDate",headerName:"Expence Date",width:150},

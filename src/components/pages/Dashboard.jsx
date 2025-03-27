@@ -42,6 +42,7 @@ const Dashboard = () => {
   }));
 
   const COLORS = ["#ff7300", "#00C49F", "#FFBB28", "#0088FE", "#E91E63"];
+  
 
   return (
     <Container maxWidth="xl" sx={{ minHeight: "100vh", backgroundColor: "#0f172a", color: "#fff", padding: 4 }}>
