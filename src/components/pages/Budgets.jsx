@@ -141,9 +141,11 @@ const Budgets = () => {
             <ListItem button onClick={() => navigate("/dashboard")}>
               <ListItemText primary="Dashboard" />
             </ListItem>
+
             <ListItem button onClick={() => navigate("/budgets")}>
               <ListItemText primary="Budgets" />
             </ListItem>
+            
             <ListItem button onClick={() => navigate("/transactions")}>
               <ListItemText primary="Transactions" />
             </ListItem>

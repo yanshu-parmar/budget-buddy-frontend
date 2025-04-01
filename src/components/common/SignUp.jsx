@@ -29,39 +29,64 @@ export const Signup = () => {
         navigate("/login");
       }
     } catch (error) {
-      console.error("Signup error", error.response?.data)
+      console.error("Signup error", error.response?.data);
       toast.error("Signup failed. Please try again.");
     }
   };
 
   return (
-    <Box sx={{ 
-      height: "100vh", 
-      width: "100vw", 
-      display: "flex", 
-      justifyContent: "center", 
-      alignItems: "center", 
-      backgroundColor: "#fff" 
-    }}>
-      <Paper elevation={10} sx={{ 
-        padding: 5, 
-        borderRadius: 3, 
-        width: "100%", 
-        maxWidth: 400, 
-        textAlign: "center", 
-        backgroundColor: "#fff", 
-        color: "#000" 
-      }}>
-        <Typography variant="h4" sx={{ fontWeight: "bold", color: "#00ADB5", mb: 3 }}>
+    <Box
+      sx={{
+        height: "100vh",
+        width: "100vw",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        background: "#FFFFF",
+      }}
+    >
+      <Paper
+        elevation={3} // Subtle elevation for professionalism
+        sx={{
+          padding: 4,
+          borderRadius: "12px",
+          width: "100%",
+          maxWidth: 400,
+          textAlign: "center",
+          backgroundColor: "#FFFFFF",
+          border: "1px solid #E2E8F0", // Light gray border
+        }}
+      >
+        <Typography
+          variant="h5"
+          sx={{
+            fontFamily: "'Montserrat', sans-serif",
+            fontWeight: 600,
+            color: "#2D3748", // Dark slate
+            mb: 1,
+          }}
+        >
           Sign Up
         </Typography>
-        <Box component="form" onSubmit={handleSubmit(submitHandler)} sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+        <Box
+          component="form"
+          onSubmit={handleSubmit(submitHandler)}
+          sx={{ display: "flex", flexDirection: "column", gap: 3 }}
+        >
           <TextField
             {...register("name", { required: true })}
             label="Full Name"
             variant="outlined"
             fullWidth
-            sx={{ input: { color: "#fff" }, label: { color: "#b0b0b0" }, fieldset: { borderColor: "#b0b0b0" } }}
+            sx={{
+              "& .MuiInputBase-root": { borderRadius: "6px" },
+              "& .MuiInputBase-input": { color: "#2D3748", fontFamily: "'Montserrat', sans-serif" },
+              "& .MuiOutlinedInput-notchedOutline": { borderColor: "#CBD5E0" }, // Light gray border
+              "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#3182CE" }, // Blue on hover
+              "& .MuiInputLabel-root": { color: "#4A5568" },
+              "& .Mui-focused .MuiInputLabel-root": { color: "#3182CE" }, // Blue when focused
+              "& .Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: "#3182CE" },
+            }}
           />
           <TextField
             {...register("email", { required: true })}
@@ -69,7 +94,15 @@ export const Signup = () => {
             type="email"
             variant="outlined"
             fullWidth
-            sx={{ input: { color: "#fff" }, label: { color: "#b0b0b0" }, fieldset: { borderColor: "#b0b0b0" } }}
+            sx={{
+              "& .MuiInputBase-root": { borderRadius: "6px" },
+              "& .MuiInputBase-input": { color: "#2D3748", fontFamily: "'Montserrat', sans-serif" },
+              "& .MuiOutlinedInput-notchedOutline": { borderColor: "#CBD5E0" }, // Light gray border
+              "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#3182CE" }, // Blue on hover
+              "& .MuiInputLabel-root": { color: "#4A5568" },
+              "& .Mui-focused .MuiInputLabel-root": { color: "#3182CE" }, // Blue when focused
+              "& .Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: "#3182CE" },
+            }}
           />
           <TextField
             {...register("password", { required: true })}
@@ -77,11 +110,19 @@ export const Signup = () => {
             type={showPassword ? "text" : "password"}
             variant="outlined"
             fullWidth
-            sx={{ input: { color: "#fff" }, label: { color: "#b0b0b0" }, fieldset: { borderColor: "#b0b0b0" } }}
+            sx={{
+              "& .MuiInputBase-root": { borderRadius: "6px" },
+              "& .MuiInputBase-input": { color: "#2D3748", fontFamily: "'Montserrat', sans-serif" },
+              "& .MuiOutlinedInput-notchedOutline": { borderColor: "#CBD5E0" }, // Light gray border
+              "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#3182CE" }, // Blue on hover
+              "& .MuiInputLabel-root": { color: "#4A5568" },
+              "& .Mui-focused .MuiInputLabel-root": { color: "#3182CE" }, // Blue when focused
+              "& .Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: "#3182CE" },
+            }}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
-                  <IconButton onClick={togglePasswordVisibility} sx={{ color: "#00ADB5" }}>
+                  <IconButton onClick={togglePasswordVisibility} sx={{ color: "#4A5568" }}>
                     {showPassword ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
                 </InputAdornment>
@@ -94,24 +135,56 @@ export const Signup = () => {
             type={showConfirmPassword ? "text" : "password"}
             variant="outlined"
             fullWidth
-            sx={{ input: { color: "#fff" }, label: { color: "#b0b0b0" }, fieldset: { borderColor: "#b0b0b0" } }}
+            sx={{
+              "& .MuiInputBase-root": { borderRadius: "6px" },
+              "& .MuiInputBase-input": { color: "#2D3748", fontFamily: "'Montserrat', sans-serif" },
+              "& .MuiOutlinedInput-notchedOutline": { borderColor: "#CBD5E0" }, // Light gray border
+              "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#3182CE" }, // Blue on hover
+              "& .MuiInputLabel-root": { color: "#4A5568" },
+              "& .Mui-focused .MuiInputLabel-root": { color: "#3182CE" }, // Blue when focused
+              "& .Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: "#3182CE" },
+            }}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
-                  <IconButton onClick={toggleConfirmPasswordVisibility} sx={{ color: "#00ADB5" }}>
+                  <IconButton onClick={toggleConfirmPasswordVisibility} sx={{ color: "#4A5568" }}>
                     {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
                 </InputAdornment>
               ),
             }}
           />
-          <Button type="submit" variant="contained" sx={{ backgroundColor: "#00ADB5", color: "#fff", fontWeight: "bold", "&:hover": { backgroundColor: "#008C9E" } }}>
+          <Button
+            type="submit"
+            variant="contained"
+            sx={{
+              backgroundColor: "#3182CE", // Professional blue
+              color: "#FFFFFF",
+              fontFamily: "'Montserrat', sans-serif",
+              fontWeight: 600,
+              borderRadius: "6px",
+              padding: "10px 0",
+              textTransform: "none", // Avoid uppercase for a softer look
+              "&:hover": {
+                backgroundColor: "#2B6CB0", // Darker blue on hover
+                transition: "background-color 0.3s ease",
+              },
+            }}
+          >
             Sign Up
           </Button>
-          <Typography variant="body2" sx={{ color: "#b0b0b0", mt: 2 }}>
+          <Typography
+            variant="body2"
+            sx={{ color: "#4A5568", fontFamily: "'Montserrat', sans-serif", mt: 2 }}
+          >
             Already have an account?{" "}
-            <span 
-              style={{ color: "#00ADB5", cursor: "pointer", fontWeight: "bold" }} 
+            <span
+              style={{
+                color: "#4A5568",
+                cursor: "pointer",
+                fontWeight: "bold",
+                textDecoration: "underline",
+              }}
               onClick={() => navigate("/login")}
             >
               Login

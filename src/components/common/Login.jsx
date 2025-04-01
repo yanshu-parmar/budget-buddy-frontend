@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { 
-  TextField, Button, Typography, Paper, Box, IconButton, InputAdornment 
-} from "@mui/material";
+import { TextField, Button, Typography, Paper, Box, IconButton, InputAdornment } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -30,34 +28,71 @@ const Login = () => {
   };
 
   return (
-    <Box sx={{ 
-      height: "100vh", 
-      width: "100vw", 
-      display: "flex", 
-      justifyContent: "center", 
-      alignItems: "center", 
-      backgroundColor: "#fff" 
-    }}>
-      <Paper elevation={10} sx={{ 
-        padding: 5, 
-        borderRadius: 3, 
-        width: "100%", 
-        maxWidth: 400, 
-        textAlign: "center", 
-        backgroundColor: "#fff", 
-        color: "#000" 
-      }}>
-        <Typography variant="h4" sx={{ fontWeight: "bold", color: "#00ADB5", mb: 3 }}>
-          Login
+    <Box
+      sx={{
+        height: "100vh",
+        width: "100vw",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#FFFFFF", // Clean white background
+      }}
+    >
+      <Paper
+        elevation={3} // Subtle elevation for professionalism
+        sx={{
+          padding: 4,
+          borderRadius: "12px",
+          width: "100%",
+          maxWidth: 400,
+          textAlign: "center",
+          backgroundColor: "#FFFFFF",
+          border: "1px solid #E2E8F0", // Light gray border
+        }}
+      >
+        {/* Branding */}
+        <Typography
+          variant="h5"
+          sx={{
+            fontFamily: "'Montserrat', sans-serif",
+            fontWeight: 600,
+            color: "#2D3748", // Dark slate
+            mb: 1,
+          }}
+        >
+          Log In
         </Typography>
-        <Box component="form" onSubmit={handleSubmit(submitHandler)} sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+        <Typography
+          variant="body2"
+          sx={{
+            fontFamily: "'Montserrat', sans-serif",
+            color: "#4A5568", // Gray
+            mb: 3,
+          }}
+        >
+          Log in to manage your finances
+        </Typography>
+
+        <Box
+          component="form"
+          onSubmit={handleSubmit(submitHandler)}
+          sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}
+        >
           <TextField
             {...register("email", { required: true })}
             label="Email"
             type="email"
             variant="outlined"
             fullWidth
-            sx={{ input: { color: "#000" }, label: { color: "#b0b0b0" }, fieldset: { borderColor: "#b0b0b0" } }}
+            sx={{
+              "& .MuiInputBase-root": { borderRadius: "6px" },
+              "& .MuiInputBase-input": { color: "#2D3748", fontFamily: "'Montserrat', sans-serif" },
+              "& .MuiOutlinedInput-notchedOutline": { borderColor: "#CBD5E0" }, // Light gray border
+              "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#3182CE" }, // Blue on hover
+              "& .MuiInputLabel-root": { color: "#4A5568" },
+              "& .Mui-focused .MuiInputLabel-root": { color: "#3182CE" }, // Blue when focused
+              "& .Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: "#3182CE" },
+            }}
           />
           <TextField
             {...register("password", { required: true })}
@@ -65,24 +100,56 @@ const Login = () => {
             type={showPassword ? "text" : "password"}
             variant="outlined"
             fullWidth
-            sx={{ input: { color: "#000" }, label: { color: "#b0b0b0" }, fieldset: { borderColor: "#b0b0b0" } }}
+            sx={{
+              "& .MuiInputBase-root": { borderRadius: "6px" },
+              "& .MuiInputBase-input": { color: "#2D3748", fontFamily: "'Montserrat', sans-serif" },
+              "& .MuiOutlinedInput-notchedOutline": { borderColor: "#CBD5E0" },
+              "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#3182CE" },
+              "& .MuiInputLabel-root": { color: "#4A5568" },
+              "& .Mui-focused .MuiInputLabel-root": { color: "#3182CE" },
+              "& .Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: "#3182CE" },
+            }}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
-                  <IconButton onClick={togglePasswordVisibility} sx={{ color: "#00ADB5" }}>
+                  <IconButton onClick={togglePasswordVisibility} sx={{ color: "#4A5568" }}>
                     {showPassword ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
                 </InputAdornment>
               ),
             }}
           />
-          <Button type="submit" variant="contained" sx={{ backgroundColor: "#00ADB5", color: "#fff", fontWeight: "bold", "&:hover": { backgroundColor: "#008C9E" } }}>
-            Login
+          <Button
+            type="submit"
+            variant="contained"
+            sx={{
+              backgroundColor: "#3182CE", // Professional blue
+              color: "#FFFFFF",
+              fontFamily: "'Montserrat', sans-serif",
+              fontWeight: 600,
+              borderRadius: "6px",
+              padding: "10px 0",
+              textTransform: "none", // Avoid uppercase for a softer look
+              "&:hover": {
+                backgroundColor: "#2B6CB0", // Darker blue on hover
+                transition: "background-color 0.3s ease",
+              },
+            }}
+          >
+            Log In
           </Button>
-          <Typography variant="body2" sx={{ color: "#b0b0b0", mt: 2 }}>
-            Don&apos;t have an account?{" "}
-            <span 
-              style={{ color: "#00ADB5", cursor: "pointer", fontWeight: "bold" }} 
+          <Typography
+            variant="body2"
+            sx={{ color: "#4A5568", fontFamily: "'Montserrat', sans-serif", mt: 2 }}
+          >
+            Don’t have an account?{" "}
+            <span
+              style={{
+                color: "#3182CE",
+                cursor: "pointer",
+                fontWeight: 600,
+                textDecoration: "underline",
+              }}
               onClick={() => navigate("/signup")}
             >
               Sign Up

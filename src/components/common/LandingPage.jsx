@@ -5,9 +5,8 @@ import { useNavigate } from "react-router-dom";
 
 const LandingPage = () => {
   const navigate = useNavigate();
+  
   const [themeMode, setThemeMode] = useState("light");
-
-  // Toggle Theme Function
   const toggleTheme = () => {
     setThemeMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
   };

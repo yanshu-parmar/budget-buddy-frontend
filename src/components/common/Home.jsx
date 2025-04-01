@@ -1,186 +1,174 @@
-// import React from 'react';
-import {
-  Box,
-  Container,
-  Grid,
-  Typography,
-  Button,
-  Card,
-  CardContent,
-  CardMedia,
-  Paper,
-  Avatar,
-  Rating,
-  AppBar,
-} from '@mui/material';
-import { useState } from 'react';
-// import { Link } from 'react-router-dom';
-import Navbar from './Navbar';
+import { useNavigate } from "react-router-dom";
+import { Typography, Button, Box, Container, Grid } from "@mui/material";
 
-function Home() {
-  const [themeMode, setThemeMode] = useState("light");
-  const toggleTheme = () => {
-    setThemeMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
-  };
+const Home = () => {
+  const navigate = useNavigate();
+
   return (
-    <AppBar position="static" sx={{ backgroundColor: themeMode === "dark" ? "#0B0F19" : "#fff", color: themeMode === "dark" ? "#fff" : "#000" }}>
-      <Box sx={{ backgroundColor: themeMode === "dark" ? "#0B0F19" : "#fff", minHeight: "100vh" }}>
-      {/* Navbar */}
-      <Navbar themeMode={themeMode} toggleTheme={toggleTheme} />
-    <Box sx={{ minHeight: '100vh',  }}>
-      {/* Header Section */}
-      {/* <Box sx={{ backgroundColor: '#333', color: 'white', padding: '1em', textAlign: 'center' }}>
-        <Typography variant="h5">Budget Buddy</Typography>
-        <Link to="/features" style={{ color: 'white', textDecoration: 'none', margin: '0 10px' }}>
-          Features
-        </Link>
-        <Link to="/about" style={{ color: 'white', textDecoration: 'none', margin: '0 10px' }}>
-          About
-        </Link>
-        <Link to="/login" style={{ color: 'white', textDecoration: 'none', margin: '0 10px' }}>
-          Login/Register
-        </Link>
-      </Box> */}
+    <Box sx={{ minHeight: "100vh", width: "100vw", backgroundColor: "#FFFFFF", display: "flex", flexDirection: "column" }}>
+
+      {/* Header */}
+
+      <Box sx={{ padding: "20px 40px", borderBottom: "1px solid #E2E8F0", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <Typography variant="h5" sx={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 600, color: "#2D3748" }}>
+          Budget Buddy
+        </Typography>
+
+        <Box sx={{ display: "flex", gap: 2 }}>
+          <Button variant="outlined" sx={{ borderColor: "#3182CE", color: "#3182CE", fontFamily: "'Montserrat', sans-serif", fontWeight: 600, textTransform: "none", "&:hover": { borderColor: "#2B6CB0", color: "#2B6CB0" } }} onClick={() => navigate("/login")}>
+            Log In
+          </Button>
+
+          <Button variant="contained" sx={{ backgroundColor: "#3182CE", color: "#FFFFFF", fontFamily: "'Montserrat', sans-serif", fontWeight: 600, textTransform: "none", "&:hover": { backgroundColor: "#2B6CB0" } }} onClick={() => navigate("/signup")}>
+            Sign Up
+          </Button>
+        </Box>
+      </Box>
 
       {/* Hero Section */}
-      <Container maxWidth="lg" sx={{ padding: '2em', textAlign: 'center' }}>
-        <Typography variant="h2" sx={{ marginBottom: '1em' }}>
-          Your Financial Companion
-        </Typography>
-        <Button variant="contained" size="large" color="primary">
-          Get Started
-        </Button>
+
+      <Container maxWidth="lg" sx={{ flexGrow: 1, py: 8 }}>
+        <Grid container spacing={4} alignItems="center">
+          <Grid item xs={12} md={6}>
+            <Typography
+              variant="h3"
+              sx={{
+                fontFamily: "'Montserrat', sans-serif",
+                fontWeight: 700,
+                color: "#2D3748",
+                mb: 2,
+              }}
+            >
+              Take Control of Your Finances
+            </Typography>
+            <Typography
+              variant="body1"
+              sx={{
+                fontFamily: "'Montserrat', sans-serif",
+                color: "#4A5568",
+                mb: 4,
+                fontSize: "1.1rem",
+              }}
+            >
+              Budget Buddy helps you track spending, manage budgets, and plan for a secure financial future—all in one simple, powerful app.
+            </Typography>
+            <Button
+              variant="contained"
+              sx={{
+                backgroundColor: "#3182CE",
+                color: "#FFFFFF",
+                fontFamily: "'Montserrat', sans-serif",
+                fontWeight: 600,
+                textTransform: "none",
+                padding: "10px 24px",
+                borderRadius: "6px",
+                "&:hover": { backgroundColor: "#2B6CB0" },
+              }}
+              onClick={() => navigate("/signup")}
+            >
+              Get Started
+            </Button>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            {/* Placeholder for an image or illustration */}
+            <Box
+              sx={{
+                height: 300,
+                backgroundColor: "#EDF2F7",
+                borderRadius: "12px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                color: "#4A5568",
+                fontFamily: "'Montserrat', sans-serif",
+              }}
+            >
+              <img src="/path/to/dashboard-illustration.svg" alt="Budget Buddy Dashboard" style={{ maxWidth: "100%", height: "auto" }} />
+            </Box>
+          </Grid>
+        </Grid>
       </Container>
 
       {/* Features Section */}
-      <Container maxWidth="lg" sx={{ padding: '2em' }}>
-        <Typography variant="h3" sx={{ marginBottom: '1em' }}>
-          Key Features of Budget Buddy
-        </Typography>
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={4}>
-            <Card sx={{ height: '100%' }}>
-              <CardMedia
-                component="img"
-                height="140"
-                image="expense-tracking.jpg"
-                alt="Expense Tracking"
-              />
-              <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
-                  Expense Tracking
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Easily track your daily expenses.
-                </Typography>
-              </CardContent>
-            </Card>
+      <Box sx={{ backgroundColor: "#F7FAFC", py: 8 }}>
+        <Container maxWidth="lg">
+          <Typography
+            variant="h4"
+            sx={{
+              fontFamily: "'Montserrat', sans-serif",
+              fontWeight: 600,
+              color: "#2D3748",
+              textAlign: "center",
+              mb: 6,
+            }}
+          >
+            Why Choose Budget Buddy?
+          </Typography>
+          <Grid container spacing={4}>
+            {[
+              {
+                title: "Track Spending",
+                desc: "Monitor every transaction with ease and clarity.",
+              },
+              {
+                title: "Set Budgets",
+                desc: "Create custom budgets to stay on top of your goals.",
+              },
+              {
+                title: "Visual Insights",
+                desc: "Understand your finances with intuitive charts.",
+              },
+            ].map((feature, index) => (
+              <Grid item xs={12} sm={4} key={index}>
+                <Box sx={{ textAlign: "center" }}>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontFamily: "'Montserrat', sans-serif",
+                      fontWeight: 600,
+                      color: "#2D3748",
+                      mb: 1,
+                    }}
+                  >
+                    {feature.title}
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      fontFamily: "'Montserrat', sans-serif",
+                      color: "#4A5568",
+                    }}
+                  >
+                    {feature.desc}
+                  </Typography>
+                </Box>
+              </Grid>
+            ))}
           </Grid>
-          <Grid item xs={12} sm={4}>
-            <Card sx={{ height: '100%' }}>
-              <CardMedia
-                component="img"
-                height="140"
-                image="budget-planning.jpg"
-                alt="Budget Planning"
-              />
-              <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
-                  Budget Planning
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Plan your budget with ease.
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <Card sx={{ height: '100%' }}>
-              <CardMedia
-                component="img"
-                height="140"
-                image="financial-insights.jpg"
-                alt="Financial Insights"
-              />
-              <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
-                  Financial Insights
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Get detailed insights into your spending habits.
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-        </Grid>
-      </Container>
+        </Container>
+      </Box>
 
-      {/* Testimonials Section */}
-      <Container maxWidth="lg" sx={{ padding: '2em' }}>
-        <Typography variant="h3" sx={{ marginBottom: '1em' }}>
-          What Our Users Say
+      {/* Footer */}
+      <Box
+        sx={{
+          padding: "20px 40px",
+          borderTop: "1px solid #E2E8F0",
+          textAlign: "center",
+          backgroundColor: "#FFFFFF",
+        }}
+      >
+        <Typography
+          variant="body2"
+          sx={{
+            fontFamily: "'Montserrat', sans-serif",
+            color: "#4A5568",
+          }}
+        >
+          © 2025 Budget Buddy. All rights reserved.
         </Typography>
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={6}>
-            <Paper elevation={3} sx={{ padding: '1em' }}>
-              <Avatar sx={{ width: 56, height: 56, margin: '0 auto' }}>
-                User1
-              </Avatar>
-              <Typography variant="body1" sx={{ marginBottom: '0.5em' }}>
-                Great app! Helps me manage my finances effectively.
-              </Typography>
-              <Rating name="read-only" value={5} readOnly />
-            </Paper>
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <Paper elevation={3} sx={{ padding: '1em' }}>
-              <Avatar sx={{ width: 56, height: 56, margin: '0 auto' }}>
-                User2
-              </Avatar>
-              <Typography variant="body1" sx={{ marginBottom: '0.5em' }}>
-                Easy to use and very intuitive.
-              </Typography>
-              <Rating name="read-only" value={5} readOnly />
-            </Paper>
-          </Grid>
-        </Grid>
-      </Container>
-
-      {/* Call-to-Action Section */}
-      <Container maxWidth="lg" sx={{ padding: '2em', textAlign: 'center' }}>
-        <Button variant="contained" size="large" color="primary">
-          Start Using Budget Buddy Today!
-        </Button>
-        <Typography variant="body1" sx={{ marginTop: '1em' }}>
-          Take control of your finances with our easy-to-use app.
-        </Typography>
-      </Container>
-
-      {/* Footer Section */}
-      <Box sx={{ backgroundColor: '#333', color: 'white', padding: '1em', textAlign: 'center' }}>
-        <Typography variant="body1">
-          Contact Us: <a href="mailto:info@budgetbuddy.com" style={{ color: 'white' }}>
-            info@budgetbuddy.com
-          </a>
-        </Typography>
-        <Typography variant="body1">
-          Follow us on{' '}
-          <a href="#" style={{ color: 'white' }}>
-            Facebook
-          </a>{' '}
-          and{' '}
-          <a href="#" style={{ color: 'white' }}>
-            Twitter
-          </a>
-          .
-        </Typography>
-        <Typography variant="body1">&copy; 2025 Budget Buddy. All rights reserved.</Typography>
       </Box>
     </Box>
-    </Box>
-    </AppBar>
-
   );
-}
+};
 
 export default Home;

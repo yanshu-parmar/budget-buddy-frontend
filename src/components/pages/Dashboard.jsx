@@ -15,7 +15,7 @@ const Dashboard = () => {
   const [transactions, setTransactions] = useState([
     { name: "McDonald's", amount: -24.99, category: "Food" },
     { name: "Car Loan", amount: -400, category: "Loan" },
-    { name: "Salary", amount: 2500, category: "Income" },
+    { name: "Salary", amount: +2500, category: "Income" },
   ]);
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
@@ -25,7 +25,7 @@ const Dashboard = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("token"); 
+    localStorage.removeItem("token");
     navigate("/login");
   };
 
@@ -41,112 +41,100 @@ const Dashboard = () => {
     value: Math.abs(value),
   }));
 
-  const COLORS = ["#ff7300", "#00C49F", "#FFBB28", "#0088FE", "#E91E63"];
-  
+  const COLORS = ["#1E2A44", "#D4A017", "#2E7D32", "#4A5568", "#A0AEC0"]; 
 
   return (
-    <Container maxWidth="xl" sx={{ minHeight: "100vh", backgroundColor: "#0f172a", color: "#fff", padding: 4 }}>
+    <Container maxWidth="xl" sx={{ minHeight: "100vh", backgroundColor: "#F8F1E9", color: "#1E2A44", padding: 4}}>
 
-      {/* Header with Sidebar Toggle & Logout */}
-      <Box 
-        sx={{ 
-          display: "flex", 
-          alignItems: "center", 
-          justifyContent: "space-between", 
-          mb: 3,
-          padding: "10px 20px",
-          position: "relative"
-        }}
-      >
-        {/* Sidebar Toggle Icon */}
-        <IconButton onClick={toggleSidebar} sx={{ color: "#d3ba2c", position: "absolute", left: 0 }}>
+      {/* Header */}
+
+      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 4, padding: "10px 20px" }}>
+        <IconButton onClick={toggleSidebar} sx={{ color: "#D4A017" }}>
           <ReorderIcon fontSize="large" />
         </IconButton>
 
-        {/* Dashboard Title - Centered */}
-        <Typography variant="h4" fontWeight="bold" sx={{ flexGrow: 1, textAlign: "center", color: "#d3ba2c" }}>
-          Dashboard
+        <Typography variant="h4" sx={{ fontFamily: "'Lora', serif", flexGrow: 1, textAlign: "center", color: "#1E2A44" }}>
+          Budget Buddy
         </Typography>
 
-        {/* Logout Button */}
-        <Button 
-          variant="contained" 
-          color="error" 
-          startIcon={<LogoutIcon />} 
-          onClick={handleLogout}
-        >
+        <Button variant="outlined" sx={{ borderColor: "#D4A017", color: "#D4A017", "&:hover": { backgroundColor: "#D4A017", color: "#F8F1E9" } }} startIcon={<LogoutIcon />} onClick={handleLogout}>
           Logout
         </Button>
       </Box>
 
-      {/* Sidebar Navigation */}
+      {/* Sidebar */}
+
       <Drawer anchor="left" open={sidebarOpen} onClose={toggleSidebar}>
-        <Box sx={{ width: 250, backgroundColor: "#1e293b", height: "100vh", color: "#fff", padding: 2 }}>
-          <Typography variant="h6" sx={{ paddingBottom: 2, color: "#d3ba2c" }}>Budget Buddy</Typography>
+        <Box sx={{ width: 220, backgroundColor: "#1E2A44", height: "100vh", color: "#F8F1E9", padding: 2 }}>
+          <Typography variant="h6" sx={{ fontFamily: "'Lora', serif', paddingBottom: 2, color: '#D4A017'" }}>
+            Budget Buddy
+          </Typography>
+
           <List>
-            <ListItem button onClick={() => navigate("/dashboard")}>
-              <ListItemText primary="Dashboard" />
-            </ListItem>
-            <ListItem button onClick={() => navigate("/budgets")}>
-              <ListItemText primary="Budgets" />
-            </ListItem>
-            <ListItem button onClick={() => navigate("/transactions")}>
-              <ListItemText primary="Transactions" />
-            </ListItem>
+            {["Dashboard", "Budgets", "Transactions"].map((text) => (
+              <ListItem button key={text} onClick={() => navigate(`/${text.toLowerCase()}`)} sx={{ "&:hover": { backgroundColor: "#2E3B55" }, borderRadius: "8px" }}>
+                <ListItemText primary={text} primaryTypographyProps={{ fontFamily: "'Montserrat', sans-serif" }} />
+              </ListItem>))}
           </List>
         </Box>
       </Drawer>
 
       {/* Financial Overview */}
+
       <Grid container spacing={3}>
-        <Grid item xs={12} md={4}>
-          <Card sx={{ backgroundColor: "#1e293b", color: "#fff", textAlign: "center", padding: 2 }}>
-            <CardContent>
-              <Typography variant="h6">Income</Typography>
-              <Typography variant="h5" sx={{ color: "#00C49F" }}>
-                {transactions.filter(txn => txn.amount > 0).reduce((sum, txn) => sum + txn.amount, 0).toFixed(2)}
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <Card sx={{ backgroundColor: "#1e293b", color: "#fff", textAlign: "center", padding: 2 }}>
-            <CardContent>
-              <Typography variant="h6">Expenses</Typography>
-              <Typography variant="h5" sx={{ color: "#e53935" }}>
-                {Math.abs(transactions.filter(txn => txn.amount < 0).reduce((sum, txn) => sum + txn.amount, 0)).toFixed(2)}
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <Card sx={{ backgroundColor: "#1e293b", color: "#fff", textAlign: "center", padding: 2 }}>
-            <CardContent>
-              <Typography variant="h6">Balance</Typography>
-              <Typography variant="h5" sx={{ color: transactions.reduce((sum, txn) => sum + txn.amount, 0) >= 0 ? "#00C49F" : "#e53935" }}>
-                {transactions.reduce((sum, txn) => sum + txn.amount, 0).toFixed(2)}
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
+        {[
+          { title: "Income", value: transactions.filter(txn => txn.amount > 0).reduce((sum, txn) => sum + txn.amount, 0).toFixed(2), color: "#2E7D32" },
+          { title: "Expenses", value: Math.abs(transactions.filter(txn => txn.amount < 0).reduce((sum, txn) => sum + txn.amount, 0)).toFixed(2), color: "#D4A017" },
+          { title: "Balance", value: transactions.reduce((sum, txn) => sum + txn.amount, 0).toFixed(2), color: transactions.reduce((sum, txn) => sum + txn.amount, 0) >= 0 ? "#2E7D32" : "#D4A017" },
+        ].map((item, index) => (
+          <Grid item xs={12} md={4} key={index}>
+            <Card sx={{ backgroundColor: "#FFFFFF", borderRadius: "12px", boxShadow: "0 4px 12px rgba(0,0,0,0.05)", transition: "transform 0.2s ease-in-out", "&:hover": { transform: "translateY(-5px)" }, padding: 2 }}>
+              <CardContent sx={{ textAlign: "center" }}>
+                <Typography variant="h6" sx={{ fontFamily: "'Montserrat', sans-serif", color: "#1E2A44" }}>
+                  {item.title}
+                </Typography>
+
+                <Typography variant="h5" sx={{ color: item.color, fontFamily: "'Lora', serif" }}>
+                  {item.value}
+                </Typography>
+
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
       </Grid>
 
       {/* Transactions List */}
-      <Typography variant="h5" sx={{ marginTop: 4, marginBottom: 2, color: "#d3ba2c" }}>
+
+      <Typography variant="h5" sx={{ marginTop: 4, marginBottom: 2, fontFamily: "'Lora', serif", color: "#1E2A44" }}>
         Recent Transactions
       </Typography>
+
       <Grid container spacing={3}>
         {transactions.map((transaction, index) => (
           <Grid item xs={12} md={4} key={index}>
-            <Card sx={{ backgroundColor: "#1e293b", color: "#fff", textAlign: "center", display: "flex", justifyContent: "space-between", alignItems: "center", padding: 2 }}>
+            <Card sx={{ backgroundColor: "#FFFFFF", borderRadius: "12px", boxShadow: "0 4px 12px rgba(0,0,0,0.05)", display: "flex", justifyContent: "space-between", 
+                alignItems: "center", 
+                padding: 2,
+                transition: "transform 0.2s ease-in-out",
+                "&:hover": { transform: "translateY(-5px)" },
+              }}
+            >
               <CardContent>
-                <Typography variant="h6">{transaction.name}</Typography>
-                <Typography variant="body1" sx={{ color: transaction.amount < 0 ? "#e53935" : "#43a047" }}>
-                  {transaction.amount < 0 ? `-${Math.abs(transaction.amount).toFixed(2)}` : `${transaction.amount.toFixed(2)}`}
+                <Typography variant="h6" sx={{ fontFamily: "'Montserrat', sans-serif", color: "#1E2A44" }}>
+                  {transaction.name}
                 </Typography>
-                <Typography variant="caption" sx={{ color: "#d3ba2c" }}>{transaction.category}</Typography>
+                <Typography 
+                  variant="body1" 
+                  sx={{ color: transaction.amount < 0 ? "#D4A017" : "#2E7D32", fontFamily: "'Lora', serif" }}
+                >
+                  {transaction.amount < 0 ? `-${Math.abs(transaction.amount).toFixed(2)}` : `+${transaction.amount.toFixed(2)}`}
+                </Typography>
+                <Typography variant="caption" sx={{ color: "#4A5568" }}>
+                  {transaction.category}
+                </Typography>
               </CardContent>
-              <IconButton onClick={() => handleDeleteTransaction(index)} sx={{ color: "#e53935" }}>
+              <IconButton onClick={() => handleDeleteTransaction(index)} sx={{ color: "#D4A017" }}>
                 <DeleteIcon />
               </IconButton>
             </Card>
@@ -155,10 +143,20 @@ const Dashboard = () => {
       </Grid>
 
       {/* Spending Chart */}
-      <Typography variant="h5" sx={{ marginTop: 4, marginBottom: 2, color: "#d3ba2c" }}>
+      <Typography 
+        variant="h5" 
+        sx={{ marginTop: 4, marginBottom: 2, fontFamily: "'Lora', serif", color: "#1E2A44" }}
+      >
         Spending Breakdown
       </Typography>
-      <Card sx={{ backgroundColor: "#1e293b", padding: 4 }}>
+      <Card 
+        sx={{ 
+          backgroundColor: "#FFFFFF", 
+          borderRadius: "12px", 
+          boxShadow: "0 4px 12px rgba(0,0,0,0.05)", 
+          padding: 4 
+        }}
+      >
         <ResponsiveContainer width="100%" height={300}>
           <PieChart>
             <Pie data={pieData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100} label>
@@ -166,11 +164,17 @@ const Dashboard = () => {
                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
               ))}
             </Pie>
-            <Tooltip />
+            <Tooltip 
+              contentStyle={{ 
+                backgroundColor: "#1E2A44", 
+                color: "#F8F1E9", 
+                borderRadius: "8px", 
+                fontFamily: "'Montserrat', sans-serif" 
+              }} 
+            />
           </PieChart>
         </ResponsiveContainer>
       </Card>
-
     </Container>
   );
 };
