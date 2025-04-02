@@ -14,7 +14,8 @@ import PrivateRoutes from "./components/hooks/PrivateRoutes"
 import Home from "./components/common/Home"
 import Login from "./components/common/Login"
 import { AddBudget } from "./components/pages/AddBudget"
-
+import { ThemeProviderWrapper } from "./components/layouts/ThemeContext"
+import Sample from "../src/Sample"
 
 const App = () => {
 
@@ -31,20 +32,23 @@ const App = () => {
 
   return (
     <div className={location.pathname === "/login" || location.pathname === "/signup" ? "" : "app-wrapper"}>
-      <Routes>
-        <Route path="/" element={<LandingPage />}></Route>
-        <Route path="/home" element={<Home />}></Route>
-        <Route path="/login" element={<Login />}></Route>
-        <Route path="/signup" element={<Signup />}></Route>
-        <Route path="/transactions" element={<Transactions />}></Route>
-        <Route path="/privateroutes" element={<PrivateRoutes />}></Route>
-        <Route path="/userprofile" element={<UserProfile />}></Route>
-        <Route path="/budgets" element={<Budgets />}></Route>
-        <Route path="/adminlayout" element={<AdminLayout />}></Route>
-        <Route path="/dashboard" element={<Dashboard />}></Route>
-        <Route path="/sidebar" element={<Sidebar />}></Route>
-        <Route path="/addbudgets" element={<AddBudget />}></Route>
-      </Routes>
+      <ThemeProviderWrapper>
+        <Routes>
+          <Route path="/landingpage" element={<LandingPage />}></Route>
+          <Route path="/" element={<Home />}></Route>
+          <Route path="/login" element={<Login />}></Route>
+          <Route path="/signup" element={<Signup />}></Route>
+          <Route path="/transactions" element={<Transactions />}></Route>
+          <Route path="/privateroutes" element={<PrivateRoutes />}></Route>
+          <Route path="/userprofile" element={<UserProfile />}></Route>
+          <Route path="/budgets" element={<Budgets />}></Route>
+          <Route path="/adminlayout" element={<AdminLayout />}></Route>
+          <Route path="/dashboard" element={<Dashboard />}></Route>
+          <Route path="/sidebar" element={<Sidebar />}></Route>
+          <Route path="/addbudgets" element={<AddBudget />}></Route>
+          <Route path="/sample" element={<Sample />}></Route>
+        </Routes>
+        </ThemeProviderWrapper>
     </div>
   )
 }

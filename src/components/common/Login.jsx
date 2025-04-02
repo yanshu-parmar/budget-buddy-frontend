@@ -135,6 +135,7 @@ const Login = () => {
                 transition: "background-color 0.3s ease",
               },
             }}
+            onClick={() => navigate("/landingpage")}
           >
             Log In
           </Button>
