@@ -16,18 +16,24 @@ import {
   Button,
   Select,
   MenuItem,
+  Avatar,
 } from "@mui/material";
-import ReorderIcon from "@mui/icons-material/Reorder";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
+import EditIcon from "@mui/icons-material/Edit";
+import AddIcon from "@mui/icons-material/Add";
+import HomeIcon from "@mui/icons-material/Home";
+import ReceiptIcon from "@mui/icons-material/Receipt";
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 
 const Budgets = () => {
   const navigate = useNavigate();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [budgets, setBudgets] = useState([]);
-  const [newBudget, setNewBudget] = useState({
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [editBudgetId, setEditBudgetId] = useState(null);
+  const [budgetData, setBudgetData] = useState({
     category: "",
     budget: "",
     spent: "",
@@ -47,42 +53,34 @@ const Budgets = () => {
     }
   };
 
-  const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setNewBudget((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setBudgetData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleAddBudget = async () => {
-    if (
-      !newBudget.category ||
-      !newBudget.budget ||
-      newBudget.spent === "" ||
-      !newBudget.description
-    ) {
+  const handleAddOrUpdateBudget = async () => {
+    if (!budgetData.category || !budgetData.budget || budgetData.spent === "" || !budgetData.description) {
       toast.error("Please fill out all fields!");
       return;
     }
 
     try {
-      const res = await axios.post("/addbudget", newBudget, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (res.status === 201) {
-        toast.success("New Budget added successfully!");
-        setBudgets([...budgets, res.data]);
-        setNewBudget({ category: "", budget: "", spent: "", description: "" });
+      if (editBudgetId) {
+        // Update existing budget
+        await axios.put(`/updatebudget/${editBudgetId}`, budgetData);
+        toast.success("Budget updated successfully!");
+      } else {
+        // Add new budget
+        const res = await axios.post("/addbudget", budgetData);
+        if (res.status === 201) toast.success("New Budget added successfully!");
       }
+      fetchBudgets();
+      setBudgetData({ category: "", budget: "", spent: "", description: "" });
+      setEditBudgetId(null);
+      setShowAddForm(false);
     } catch (error) {
-      console.error("Error adding budget:", error.response?.data);
-      toast.error("Failed to add new budget. Please try again!");
+      console.error("Error updating budget:", error);
+      toast.error("Failed to update budget. Please try again!");
     }
   };
 
@@ -97,200 +95,108 @@ const Budgets = () => {
     }
   };
 
-  const COLORS = ["#00C49F", "#FFBB28"];
+  const handleEditBudget = (budget) => {
+    setEditBudgetId(budget._id);
+    setBudgetData({
+      category: budget.category,
+      budget: budget.budget,
+      spent: budget.spent,
+      description: budget.description,
+    });
+    setShowAddForm(true);
+  };
+
+  const handleCancelEdit = () => {
+    setEditBudgetId(null);
+    setShowAddForm(false);
+    setBudgetData({ category: "", budget: "", spent: "", description: "" });
+  };
+
+  const COLORS = ["#00C49F", "#FF8042"];
 
   return (
-    <Container
-      maxWidth="xl"
-      sx={{
-        minHeight: "100vh",
-        backgroundColor: "#0f172a",
-        color: "#fff",
-        padding: 4,
-      }}
-    >
-      {/* Sidebar Toggle */}
-      <IconButton
-        onClick={toggleSidebar}
-        sx={{
-          position: "fixed",
-          top: 20,
-          left: 20,
-          color: "#d3ba2c",
-          zIndex: 1000,
-        }}
-      >
-        <ReorderIcon fontSize="large" />
-      </IconButton>
-
-      {/* Sidebar Navigation */}
-      <Drawer anchor="left" open={sidebarOpen} onClose={toggleSidebar}>
-        <Box
-          sx={{
-            width: 250,
-            backgroundColor: "#1e293b",
-            height: "100vh",
-            color: "#fff",
-            padding: 2,
-          }}
-        >
-          <Typography variant="h6" sx={{ paddingBottom: 2 }}>
-            Budget Buddy
-          </Typography>
+    <Box sx={{ display: "flex" }}>
+      <Drawer anchor="left" variant="permanent" sx={{ width: 250, flexShrink: 0 }}>
+        <Box sx={{ width: 250, height: "100vh", backgroundColor: "#1A1A1A", color: "#FFFFFF", padding: 2 }}>
+          <Box sx={{ display: "flex", alignItems: "center", mb: 4 }}>
+            <Avatar sx={{ bgcolor: "#4CAF50", mr: 2 }}>Y</Avatar>
+            <Typography variant="body1" sx={{ fontWeight: 600 }}>yanshuparmar17</Typography>
+          </Box>
           <List>
-            <ListItem button onClick={() => navigate("/dashboard")}>
-              <ListItemText primary="Dashboard" />
-            </ListItem>
-
-            <ListItem button onClick={() => navigate("/budgets")}>
-              <ListItemText primary="Budgets" />
-            </ListItem>
-            
-            <ListItem button onClick={() => navigate("/transactions")}>
-              <ListItemText primary="Transactions" />
-            </ListItem>
+            {[{ text: "Home", icon: <HomeIcon />, route: "/dashboard" },
+              { text: "Budgets", icon: <AccountBalanceWalletIcon />, route: "/budgets" },
+              { text: "Transactions", icon: <ReceiptIcon />, route: "/transactions" }].map((item, index) => (
+                <ListItem button key={index} onClick={() => navigate(item.route)}>
+                  {item.icon} <ListItemText primary={item.text} />
+                </ListItem>
+            ))}
           </List>
         </Box>
       </Drawer>
 
-      {/* Header */}
-      <Typography
-        variant="h4"
-        fontWeight="bold"
-        sx={{ marginBottom: 4, color: "#d3ba2c", textAlign: "center" }}
-      >
-        Budgets Overview
-      </Typography>
+      <Container maxWidth="xl" sx={{ minHeight: "100vh", padding: 4, marginLeft: "25px" }}>
+        <Typography variant="h4" fontWeight="bold" sx={{ marginBottom: 4, textAlign: "center" }}>
+          Budgets Overview
+        </Typography>
 
-      {/* Add Budget Form */}
-      <Box
-        sx={{
-          display: "flex",
-          gap: 2,
-          justifyContent: "center",
-          flexWrap: "wrap",
-          marginBottom: 4,
-        }}
-      >
-        <Select
-          name="category"
-          value={newBudget.category}
-          onChange={handleInputChange}
-          sx={{ backgroundColor: "#fff", borderRadius: 1, minWidth: 150 }}
-        >
-          <MenuItem value="">Select Category</MenuItem>
-          <MenuItem value="Food">Food</MenuItem>
-          <MenuItem value="Transport">Transport</MenuItem>
-          <MenuItem value="Loan">Loan</MenuItem>
-          <MenuItem value="Rent">Rent</MenuItem>
-          <MenuItem value="Shopping">Shopping</MenuItem>
-          <MenuItem value="Entertainment">Entertainment</MenuItem>
-        </Select>
-        <TextField
-          name="budget"
-          type="number"
-          label="Total Budget"
-          value={newBudget.budget}
-          onChange={handleInputChange}
-          sx={{ backgroundColor: "#fff", borderRadius: 1 }}
-        />
-        <TextField
-          name="spent"
-          type="number"
-          label="Spent"
-          value={newBudget.spent}
-          onChange={handleInputChange}
-          sx={{ backgroundColor: "#fff", borderRadius: 1 }}
-        />
-        <TextField
-          name="description"
-          label="Description"
-          value={newBudget.description}
-          onChange={handleInputChange}
-          sx={{ backgroundColor: "#fff", borderRadius: 1, width: "300px" }}
-        />
-        <Button
-          onClick={handleAddBudget}
-          variant="contained"
-          sx={{ backgroundColor: "#d3ba2c", color: "#000", fontWeight: "bold" }}
-        >
-          Add Budget
+        <Button variant="contained" startIcon={<AddIcon />} onClick={() => setShowAddForm(!showAddForm)} sx={{ marginBottom: 3 }}>
+          {showAddForm ? "Cancel" : editBudgetId ? "Edit Budget" : "Add Budget"}
         </Button>
-      </Box>
 
-      {/* Budget List with Charts */}
-      <Grid container spacing={3}>
-        {budgets.map((budget) => {
-          const remaining = budget.budget - budget.spent;
-          const chartData = [
-            { name: "Spent", value: budget.spent },
-            { name: "Remaining", value: remaining },
-          ];
+        {showAddForm && (
+          <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap", marginBottom: 4 }}>
+            <Select name="category" value={budgetData.category} onChange={handleInputChange} sx={{ minWidth: 150 }}>
+              <MenuItem value="">Select Category</MenuItem>
+              <MenuItem value="Salary">Salary</MenuItem>
+              <MenuItem value="Food">Food</MenuItem>
+              <MenuItem value="Transport">Transport</MenuItem>
+              <MenuItem value="Shopping">Shopping</MenuItem>
+              <MenuItem value="Groceries">Groceries</MenuItem>
+            </Select>
+            <TextField name="budget" type="number" label="Total Budget" value={budgetData.budget} onChange={handleInputChange} />
+            <TextField name="spent" type="number" label="Spent" value={budgetData.spent} onChange={handleInputChange} />
+            <TextField name="description" label="Description" value={budgetData.description} onChange={handleInputChange} sx={{ width: "300px" }} />
+            <Button onClick={handleAddOrUpdateBudget} variant="contained">{editBudgetId ? "Save Changes" : "Add Budget"}</Button>
+            {editBudgetId && <Button onClick={handleCancelEdit} variant="outlined">Cancel</Button>}
+          </Box>
+        )}
 
-          return (
-            <Grid item xs={12} md={4} key={budget._id}>
-              <Card
-                sx={{
-                  backgroundColor: "#1e293b",
-                  color: "#fff",
-                  padding: 2,
-                  position: "relative",
-                }}
-              >
-                <IconButton
-                  onClick={() => handleDeleteBudget(budget._id)}
-                  sx={{
-                    position: "absolute",
-                    top: 10,
-                    right: 10,
-                    color: "#e53935",
-                  }}
-                >
-                  <DeleteIcon />
-                </IconButton>
-                <CardContent>
-                  <Typography variant="h6">{budget.category}</Typography>
-                  <Typography variant="body1" sx={{ color: "#00C49F" }}>
-                    Budget: {budget.budget}
-                  </Typography>
-                  <Typography variant="body1" sx={{ color: "#e53935" }}>
-                    Spent: {budget.spent}
-                  </Typography>
-                  <Typography
-                    variant="body1"
-                    sx={{ color: remaining >= 0 ? "#43a047" : "#e53935" }}
-                  >
-                    Remaining: {remaining}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    sx={{ color: "#d3ba2c", fontStyle: "italic" }}
-                  >
-                    {budget.description}
-                  </Typography>
-                  <PieChart width={200} height={200}>
-                    <Pie
-                      data={chartData}
-                      cx="50%"
-                      cy="50%"
-                      outerRadius={80}
-                      fill="#8884d8"
-                      dataKey="value"
-                    >
-                      {chartData.map((_, i) => (
-                        <Cell key={i} fill={COLORS[i]} />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                    <Legend />
-                  </PieChart>
-                </CardContent>
-              </Card>
-            </Grid>
-          );
-        })}
-      </Grid>
-    </Container>
+        <Grid container spacing={3}>
+          {budgets.map((budget) => {
+            const remaining = Math.max(budget.budget - budget.spent, 0);
+            const pieData = [
+              { name: "Remaining", value: remaining },
+              { name: "Spent", value: budget.spent },
+            ];
+            
+            return (
+              <Grid item md={4} key={budget._id}>
+                <Card sx={{ padding: 2, position: "relative" }}>
+                  <IconButton onClick={() => handleEditBudget(budget)} sx={{ position: "absolute", top: 10, right: 50, color: "#FFA726" }}>
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton onClick={() => handleDeleteBudget(budget._id)} sx={{ position: "absolute", top: 10, right: 10, color: "#e53935" }}>
+                    <DeleteIcon />
+                  </IconButton>
+                  <CardContent>
+                    <Typography variant="h6">{budget.category}</Typography>
+                    <Typography variant="body1">Budget: {budget.budget}</Typography>
+                    <Typography variant="body1">Spent: {budget.spent}</Typography>
+                    <Typography variant="body2">{budget.description}</Typography>
+                    <ResponsiveContainer width="100%" height={200}>
+                      <PieChart>
+                        <Pie data={pieData} dataKey="value" cx="50%" cy="50%" outerRadius={70} label />
+                        <Tooltip />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </CardContent>
+                </Card>
+              </Grid>
+            );
+          })}
+        </Grid>
+      </Container>
+    </Box>
   );
 };
 

@@ -7,7 +7,6 @@ import {
   Card,
   CardContent,
   IconButton,
-  Drawer,
   List,
   ListItem,
   ListItemText,
@@ -16,15 +15,20 @@ import {
   Button,
   Select,
   MenuItem,
+  Avatar,
+  Tooltip,
 } from "@mui/material";
-import ReorderIcon from "@mui/icons-material/Reorder";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { Home } from "@mui/icons-material";
+import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
+import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
+import DashboardIcon from "@mui/icons-material/Dashboard";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
 
 const Transactions = () => {
   const navigate = useNavigate();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [transactions, setTransactions] = useState([]);
   const [newTransaction, setNewTransaction] = useState({
     category: "",
@@ -46,7 +50,6 @@ const Transactions = () => {
     }
   };
 
-  const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -86,60 +89,116 @@ const Transactions = () => {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
+
+  const categories = transactions.reduce((acc, txn) => {
+    if (!acc[txn.category]) acc[txn.category] = 0;
+    acc[txn.category] += txn.amount;
+    return acc;
+  }, {});
+
+  const pieData = Object.entries(categories).map(([key, value]) => ({
+    name: key,
+    value: Math.abs(value),
+  }));
+
+  const COLORS = ["#4B8DDA", "#FF6384", "#36A2EB", "#FFCE56", "#2E7D32"]; 
+
   return (
-    <Container maxWidth="xl" sx={{ minHeight: "100vh", backgroundColor: "#0f172a", color: "#fff", padding: 4 }}>
-      <IconButton onClick={toggleSidebar} sx={{ position: "fixed", top: 20, left: 20, color: "#d3ba2c", zIndex: 1000 }}>
-        <ReorderIcon fontSize="large" />
-      </IconButton>
-
-      <Drawer anchor="left" open={sidebarOpen} onClose={toggleSidebar}>
-        <Box sx={{ width: 250, backgroundColor: "#1e293b", height: "100vh", color: "#fff", padding: 2 }}>
-          <Typography variant="h6" sx={{ paddingBottom: 2 }}>Budget Buddy</Typography>
-          <List>
-            <ListItem button onClick={() => navigate("/dashboard")}><ListItemText primary="Dashboard" /></ListItem>
-            <ListItem button onClick={() => navigate("/budgets")}><ListItemText primary="Budgets" /></ListItem>
-            <ListItem button onClick={() => navigate("/transactions")}><ListItemText primary="Transactions" /></ListItem>
-          </List>
+    <Box sx={{ display: "flex", minHeight: "100vh" }}>
+      {/* Sidebar */}
+      <Box sx={{
+        width: "250px", height: "100vh", color: "#000", padding: 2, backgroundColor: "#f5f7fa", 
+        position: "fixed", left: 0, top: 0, display: "flex", flexDirection: "column"}}>
+        <Box sx={{ display: "flex", alignItems: "center", mb: 4 }}>
+          <Avatar sx={{ bgcolor: "#4CAF50", mr: 2 }}>Y</Avatar>
+          <Typography variant="body1" sx={{ fontWeight: 600 }}>yanshuparmar17</Typography>
         </Box>
-      </Drawer>
-
-      <Typography variant="h4" fontWeight="bold" sx={{ marginBottom: 4, color: "#d3ba2c", textAlign: "center" }}>Transactions Overview</Typography>
-
-      <Box sx={{ display: "flex", gap: 2, justifyContent: "center", flexWrap: "wrap", marginBottom: 4 }}>
-        <Select name="category" value={newTransaction.category} onChange={handleInputChange} sx={{ backgroundColor: "#fff", borderRadius: 1, minWidth: 150 }}>
-          <MenuItem value="">Select Category</MenuItem>
-          <MenuItem value="Salary">Salary</MenuItem>
-          <MenuItem value="Food">Food</MenuItem>
-          <MenuItem value="Transport">Transport</MenuItem>
-          <MenuItem value="Shopping">Shopping</MenuItem>
-        </Select>
-        <Select name="type" value={newTransaction.type} onChange={handleInputChange} sx={{ backgroundColor: "#fff", borderRadius: 1, minWidth: 150 }}>
-          <MenuItem value="">Select Type</MenuItem>
-          <MenuItem value="Income">Income</MenuItem>
-          <MenuItem value="Expense">Expense</MenuItem>
-        </Select>
-        <TextField name="amount" type="number" label="Amount" value={newTransaction.amount} onChange={handleInputChange} sx={{ backgroundColor: "#fff", borderRadius: 1 }} />
-        <TextField name="description" label="Description" value={newTransaction.description} onChange={handleInputChange} sx={{ backgroundColor: "#fff", borderRadius: 1, width: "300px" }} />
-        <Button onClick={handleAddTransaction} variant="contained" sx={{ backgroundColor: "#d3ba2c", color: "#000", fontWeight: "bold" }}>Add Transaction</Button>
+    
+        <List>
+          {[{ text: "Home", icon: <Home />, route: "/landingpage" },
+            { text: "Dashboard",icon: <DashboardIcon />, route: "/dashboard"},
+            { text: "Budgets", icon: <MonetizationOnIcon />, route: "/budgets" },
+            { text: "Transactions", icon: <ReceiptLongIcon />, route: "/transactions" }]
+            .map((item, index) => (
+          <ListItem button key={index} onClick={() => navigate(item.route)}>
+            {item.icon} <ListItemText primary={item.text} />
+          </ListItem>
+          ))}
+        </List>
+    
+        <Button variant="contained" onClick={handleLogout} sx={{ mt: "auto", bgcolor: "#FF4D4D", color: "#FFFFFF" }}>
+          Logout
+        </Button>
       </Box>
+      
+      {/* Main Content */}
+      <Container maxWidth="xl" sx={{ minHeight: "100vh", padding: 4, marginLeft: "250px" }}>
+        <Typography variant="h4" fontWeight="bold" sx={{ marginBottom: 4, textAlign: "center" }}>Transactions Overview</Typography>
 
-      <Grid container spacing={3}>
-        {transactions.map((transaction) => (
-          <Grid item md={4} key={transaction._id}>
-            <Card sx={{ backgroundColor: "#1e293b", color: "#fff", padding: 2, position: "relative" }}>
-              <IconButton onClick={() => handleDeleteTransaction(transaction._id)} sx={{ position: "absolute", top: 10, right: 10, color: "#e53935" }}>
-                <DeleteIcon />
-              </IconButton>
-              <CardContent>
-                <Typography variant="h6">{transaction.category}</Typography>
-                <Typography variant="body1" sx={{ color: transaction.type === "Income" ? "#00C49F" : "#FF4444" }}>Amount: {transaction.amount}</Typography>
-                <Typography variant="body2" sx={{ color: "#d3ba2c", fontStyle: "italic" }}>{transaction.description}</Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
-    </Container>
+        {/* Add Transaction Form */}
+        <Box sx={{ display: "flex", gap: 2, justifyContent: "center", flexWrap: "wrap", marginBottom: 4 }}>
+          <Select name="category" value={newTransaction.category} onChange={handleInputChange} sx={{ minWidth: 150 }}>
+            <MenuItem value="">Select Category</MenuItem>
+            <MenuItem value="Salary">Salary</MenuItem>
+            <MenuItem value="Food">Food</MenuItem>
+            <MenuItem value="Transport">Transport</MenuItem>
+            <MenuItem value="Shopping">Shopping</MenuItem>
+          </Select>
+          <Select name="type" value={newTransaction.type} onChange={handleInputChange} sx={{ minWidth: 150 }}>
+            <MenuItem value="">Select Type</MenuItem>
+            <MenuItem value="Income">Income</MenuItem>
+            <MenuItem value="Expense">Expense</MenuItem>
+          </Select>
+          <TextField name="amount" type="number" label="Amount" value={newTransaction.amount} onChange={handleInputChange} />
+          <TextField name="description" label="Description" value={newTransaction.description} onChange={handleInputChange} sx={{ width: "300px" }} />
+          <Button onClick={handleAddTransaction} variant="contained">Add Transaction</Button>
+        </Box>
+
+        {/* Transactions List */}
+        <Grid container spacing={3}>
+          {transactions.map((transaction) => (
+            <Grid item md={4} key={transaction._id}>
+              <Card sx={{ padding: 2, position: "relative" }}>
+                <IconButton onClick={() => handleDeleteTransaction(transaction._id)} sx={{ position: "absolute", top: 10, right: 10, color: "#e53935" }}>
+                  <DeleteIcon />
+                </IconButton>
+                <CardContent>
+                  <Typography variant="h6">{transaction.category}</Typography>
+                  <Typography variant="body1">Amount: {transaction.amount}</Typography>
+                  <Typography variant="body2">{transaction.description}</Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+
+        {/* Pie Chart */}
+        <Typography variant="h5" sx={{ mt: 4, mb: 2 }}>Spending Breakdown</Typography>
+        <Card sx={{ padding: 4 }}>
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie 
+                data={pieData} 
+                dataKey="value" 
+                nameKey="name" 
+                cx="50%" 
+                cy="50%" 
+                outerRadius={100} 
+                label={({ name }) => name}>
+                  {pieData.map((_, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip formatter={(value, name) => [`${name}: $${value}`, "Category"]} />
+            </PieChart>
+          </ResponsiveContainer>
+        </Card>
+      </Container>
+    </Box>
   );
 };
 

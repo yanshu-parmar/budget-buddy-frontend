@@ -8,7 +8,7 @@ import Dashboard from "./components/pages/Dashboard"
 import Transactions from "./components/pages/Transactions"
 import Budgets from "./components/pages/Budgets"
 import axios from "axios"
-import UserProfile from "./components/user/UserProfile" 
+// import UserProfile from "./components/user/UserProfile" 
 import { useEffect } from "react"
 import PrivateRoutes from "./components/hooks/PrivateRoutes"
 import Home from "./components/common/Home"
@@ -40,7 +40,7 @@ const App = () => {
           <Route path="/signup" element={<Signup />}></Route>
           <Route path="/transactions" element={<Transactions />}></Route>
           <Route path="/privateroutes" element={<PrivateRoutes />}></Route>
-          <Route path="/userprofile" element={<UserProfile />}></Route>
+          {/* <Route path="/userprofile" element={<UserProfile />}></Route> */}
           <Route path="/budgets" element={<Budgets />}></Route>
           <Route path="/adminlayout" element={<AdminLayout />}></Route>
           <Route path="/dashboard" element={<Dashboard />}></Route>
@@ -54,3 +54,5 @@ const App = () => {
 }
 
 export default App
+
+//#f04c5f

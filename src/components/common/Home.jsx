@@ -15,7 +15,7 @@ const Home = () => {
       top: 0, 
       left: 0, 
       width: "100%", 
-      backgroundColor: "#FFFFFF", 
+      backgroundColor: "#FFFFFF",
       padding: "20px 40px", 
       borderBottom: "1px solid #E2E8F0", 
       display: "flex", 
