@@ -44,8 +44,8 @@ const Landing = () => {
           variant="outlined"
           startIcon={<LogoutIcon />}
           sx={{
-            borderColor: "#3182CE",
-            color: "#3182CE",
+            borderColor: "#f04c5f",
+            color: "#f04c5f",
             fontFamily: "'Montserrat', sans-serif",
             fontWeight: 600,
             textTransform: "none",

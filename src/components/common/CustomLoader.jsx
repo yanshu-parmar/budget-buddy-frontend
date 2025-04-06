@@ -1,9 +1,18 @@
-// import React from 'react'
+// import React from "react";
+import "../assets/loader.css"
 
-export const CustomLoader = () => {
+export const CustomeLoader = () => {
   return (
-    <div>
-        <h1>Loading.....</h1>
+    <div className="banter-loader">
+      <div className="banter-loader__box"></div>
+      <div className="banter-loader__box"></div>
+      <div className="banter-loader__box"></div>
+      <div className="banter-loader__box"></div>
+      <div className="banter-loader__box"></div>
+      <div className="banter-loader__box"></div>
+      <div className="banter-loader__box"></div>
+      <div className="banter-loader__box"></div>
+      <div className="banter-loader__box"></div>
     </div>
-  )
-}
+  );
+};

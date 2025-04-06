@@ -154,6 +154,7 @@ const Budgets = () => {
             <MenuItem value="Expense">Expense</MenuItem>
           </Select>
           <TextField name="amount" type="number" label="Amount" value={newBudget.amount} onChange={handleInputChange} />
+          <TextField name="spend" type="number" label="Spend" value={newBudget.spend} onChange={handleInputChange} />
           <TextField name="description" label="Description" value={newBudget.description} onChange={handleInputChange} sx={{ width: "300px" }} />
           <Button onClick={handleAddBudget} variant="contained">Add Budget</Button>
         </Box>

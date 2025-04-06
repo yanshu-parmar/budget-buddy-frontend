@@ -15,7 +15,6 @@ import Home from "./components/common/Home"
 import Login from "./components/common/Login"
 import { AddBudget } from "./components/pages/AddBudget"
 import { ThemeProviderWrapper } from "./components/layouts/ThemeContext"
-import Sample from "../src/Sample"
 
 const App = () => {
 
@@ -46,7 +45,6 @@ const App = () => {
           <Route path="/dashboard" element={<Dashboard />}></Route>
           <Route path="/sidebar" element={<Sidebar />}></Route>
           <Route path="/addbudgets" element={<AddBudget />}></Route>
-          <Route path="/sample" element={<Sample />}></Route>
         </Routes>
         </ThemeProviderWrapper>
     </div>
