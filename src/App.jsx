@@ -15,6 +15,8 @@ import Home from "./components/common/Home"
 import Login from "./components/common/Login"
 import { AddBudget } from "./components/pages/AddBudget"
 import { ThemeProviderWrapper } from "./components/layouts/ThemeContext"
+import { ToastContainer } from "react-toastify"
+import 'react-toastify/dist/ReactToastify.css'
 
 const App = () => {
 
@@ -47,6 +49,7 @@ const App = () => {
           <Route path="/addbudgets" element={<AddBudget />}></Route>
         </Routes>
         </ThemeProviderWrapper>
+        <ToastContainer />
     </div>
   )
 }

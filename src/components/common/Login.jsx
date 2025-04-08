@@ -155,6 +155,7 @@ const Login = () => {
             >
               Sign Up
             </span>
+            toast.success({"You have successfully login!"})
           </Typography>
         </Box>
       </Paper>
