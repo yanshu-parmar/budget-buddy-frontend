@@ -17,6 +17,7 @@ import { AddBudget } from "./components/pages/AddBudget"
 import { ThemeProviderWrapper } from "./components/layouts/ThemeContext"
 import { ToastContainer } from "react-toastify"
 import 'react-toastify/dist/ReactToastify.css'
+import MonthlyTransaction from "./components/pages/MonthlyTransaction"
 
 const App = () => {
 
@@ -47,6 +48,7 @@ const App = () => {
           <Route path="/dashboard" element={<Dashboard />}></Route>
           <Route path="/sidebar" element={<Sidebar />}></Route>
           <Route path="/addbudgets" element={<AddBudget />}></Route>
+          <Route path="/monthlytransaction" element={<MonthlyTransaction />}></Route>
         </Routes>
         </ThemeProviderWrapper>
         <ToastContainer />

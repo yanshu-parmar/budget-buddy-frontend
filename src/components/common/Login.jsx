@@ -18,6 +18,7 @@ const Login = () => {
     try {
       const res = await axios.post("/user/login", data);
       if (res.status === 200) {
+        localStorage.setItem("id", res.data.data._id);
         toast.success("Login Successful!");
         navigate("/dashboard");
       }
