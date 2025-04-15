@@ -10,70 +10,74 @@ const Home = () => {
       
       {/* Header */}
       <Box 
-    sx={{ 
-      position: "fixed", 
-      top: 0, 
-      left: 0, 
-      width: "100%", 
-      backgroundColor: "#FFFFFF",
-      padding: "20px 40px", 
-      borderBottom: "1px solid #E2E8F0", 
-      display: "flex", 
-      justifyContent: "space-between", 
-      alignItems: "center", 
-      zIndex: 1000 
-    }}
-  >
-    <Button onClick={() => navigate("/")} sx={{ display: "flex", alignItems: "center", textTransform: "none", background: "none", border: "none", cursor: "pointer" }}>
-      <Box display="flex" alignItems="flex-end" sx={{ height: 40, mr: 1 }}>
-        <Box width={10} height={30} bgcolor="green" mr={0.5} sx={{ opacity: 0.9, boxShadow: "2px 2px 4px rgba(0, 0, 0, 0.2)", borderRadius: 1 }} />
-        <Box width={10} height={40} bgcolor="blue" sx={{ opacity: 0.9, boxShadow: "2px 2px 4px rgba(0, 0, 0, 0.2)", borderRadius: 1 }} />
+        sx={{ 
+        position: "fixed", 
+        top: 0, 
+        left: 0, 
+        width: "100%", 
+        backgroundColor: "#FFFFFF", 
+        padding: "20px 40px", 
+        borderBottom: "1px solid #E2E8F0", 
+        display: "flex", 
+        justifyContent: "space-between", 
+        alignItems: "center", 
+        zIndex: 1000 
+        }}
+      >
+      <Button onClick={() => navigate("/")} sx={{ display: "flex", alignItems: "center", textTransform: "none", background: "none", border: "none", cursor: "pointer" }}>
+        <Box display="flex" alignItems="flex-end" sx={{ height: 40, mr: 1 }}>
+          <Box width={10} height={30} bgcolor="green" mr={0.5} sx={{ opacity: 0.9, boxShadow: "2px 2px 4px rgba(0, 0, 0, 0.2)", borderRadius: 1 }} />
+          <Box width={10} height={40} bgcolor="blue" sx={{ opacity: 0.9, boxShadow: "2px 2px 4px rgba(0, 0, 0, 0.2)", borderRadius: 1 }} />
+        </Box>
+
+        <Typography variant="h5" sx={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 600, color: "#2D3748" }}>
+          Budget Buddy
+        </Typography>
+      </Button>
+
+      <Box sx={{ display: "flex", gap: 2 }}>
+        <Button variant="outlined" sx={{ borderColor: "#3182CE", color: "#3182CE", fontFamily: "'Montserrat', sans-serif", fontWeight: 600, textTransform: "none", "&:hover": { borderColor: "#2B6CB0", color: "#2B6CB0" } }} onClick={() => navigate("/login")}>
+          Log In
+        </Button>
+
+        <Button variant="contained" sx={{ backgroundColor: "#3182CE", color: "#FFFFFF", fontFamily: "'Montserrat', sans-serif", fontWeight: 600, textTransform: "none", "&:hover": { backgroundColor: "#2B6CB0" } }} onClick={() => navigate("/signup")}>
+          Sign Up
+        </Button>
       </Box>
-      <Typography variant="h5" sx={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 600, color: "#2D3748" }}>
-        Budget Buddy
-      </Typography>
-    </Button>
-
-    <Box sx={{ display: "flex", gap: 2 }}>
-      <Button variant="outlined" sx={{ borderColor: "#3182CE", color: "#3182CE", fontFamily: "'Montserrat', sans-serif", fontWeight: 600, textTransform: "none", "&:hover": { borderColor: "#2B6CB0", color: "#2B6CB0" } }} onClick={() => navigate("/login")}>
-        Log In
-      </Button>
-      <Button variant="contained" sx={{ backgroundColor: "#3182CE", color: "#FFFFFF", fontFamily: "'Montserrat', sans-serif", fontWeight: 600, textTransform: "none", "&:hover": { backgroundColor: "#2B6CB0" } }} onClick={() => navigate("/signup")}>
-        Sign Up
-      </Button>
     </Box>
-  </Box>
 
-      {/* Hero Section */}
-      <Container maxWidth="lg" sx={{ flexGrow: 1, py: 8, paddingTop: "120px" }}>
-        <Grid container spacing={4} alignItems="center">
-          <Grid item xs={12} md={6}>
-            <Typography
-              variant="h3"
-              sx={{
-                fontFamily: "'Montserrat', sans-serif",
-                fontWeight: 700,
-                color: "#2D3748",
-                mb: 2,
-              }}
-            >
+    {/* Hero Section */}
+    <Container maxWidth="lg" sx={{ flexGrow: 1, py: 8, padding: "200px" }}>
+      <Grid container spacing={4} alignItems="center">
+        <Grid item xs={12} md={6}>
+          <Typography
+            variant="h3"
+            sx={{
+              fontFamily: "'Montserrat', sans-serif",
+              fontWeight: 700,
+              color: "#2D3748",
+              mb: 2,
+            }}
+          >
               Take Control of Your Finances
-            </Typography>
-            <Typography
-              variant="body1"
-              sx={{
-                fontFamily: "'Montserrat', sans-serif",
-                color: "#4A5568",
-                mb: 4,
-                fontSize: "1.1rem",
-              }}
-            >
-              Budget Buddy helps you track spending, manage budgets, and plan for a secure financial future—all in one simple, powerful app.
-            </Typography>
-            <Button
+          </Typography>
+
+          <Typography
+            variant="body1"
+            sx={{
+              fontFamily: "'Montserrat', sans-serif",
+              color: "#4A5568",
+              mb: 4,
+              fontSize: "1.1rem",
+            }}
+          >
+            Budget Buddy helps you track spending, manage budgets, and plan for a secure financial future—all in one simple, powerful app.
+          </Typography>
+
+          <Button
               variant="contained"
               sx={{
-                backgroundColor: "#3182CE",
+                backgroundColor: "green",
                 color: "#FFFFFF",
                 fontFamily: "'Montserrat', sans-serif",
                 fontWeight: 600,
@@ -105,7 +109,6 @@ const Home = () => {
           </Grid>
         </Grid>
       </Container>
-
       <Box sx={{ backgroundColor: "#F7FAFC", py: 8 }}>
       <Container maxWidth="lg">
         {/* Section Title */}
@@ -162,7 +165,7 @@ const Home = () => {
       </Container>
     </Box>
 
-    <Box sx={{ backgroundColor: "#F7FAFC", py: 8 }}>
+    <Box sx={{ backgroundColor: "#FFFFFF", py: 8 }}>
       <Container maxWidth="lg">
         {/* Section Title */}
         <Typography
@@ -212,7 +215,7 @@ const Home = () => {
       </Container>
     </Box>
 
-    <Box sx={{ backgroundColor: "#FFFFFF", py: 8 }}>
+    <Box sx={{ backgroundColor: "#F7FAFC", py: 8 }}>
       <Container maxWidth="lg">
         {/* Section Title */}
         <Typography
@@ -263,8 +266,8 @@ const Home = () => {
     </Box>
 
       {/* Footer */}
-      <Box sx={{ padding: "20px 40px", borderTop: "1px solid #E2E8F0", textAlign: "center", backgroundColor: "#FFFFFF" }}>
-        <Typography variant="body2" sx={{ fontFamily: "'Montserrat', sans-serif", color: "#4A5568" }}>
+      <Box sx={{ padding: "20px 40px", borderTop: "1px solid #E2E8F0", textAlign: "center", backgroundColor: "#3182CE" }}>
+        <Typography variant="body2" sx={{ fontFamily: "'Montserrat', sans-serif", color: "#ffffff" }}>
           © 2025 Budget Buddy. All rights reserved.
         </Typography>
       </Box>

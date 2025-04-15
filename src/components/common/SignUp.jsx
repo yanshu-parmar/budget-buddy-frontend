@@ -1,197 +1,213 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import { TextField, Button, Typography, Paper, Box, IconButton, InputAdornment } from "@mui/material";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  TextField,
+  Button,
+  Typography,
+  Box,
+  IconButton,
+  InputAdornment,
+  Alert,
+  CircularProgress,
+} from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import axios from "axios";
+import { authAPI } from "../utils/api";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import "../../assets/css/login.css";
 
-export const Signup = () => {
+const Signup = () => {
   const navigate = useNavigate();
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+  } = useForm();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
-  const toggleConfirmPasswordVisibility = () => setShowConfirmPassword(!showConfirmPassword);
+  const toggleConfirmPasswordVisibility = () =>
+    setShowConfirmPassword(!showConfirmPassword);
 
   const submitHandler = async (data) => {
     if (data.password !== data.confirmPassword) {
-      toast.error("Passwords do not match!");
+      setError("Passwords do not match!");
       return;
     }
 
+    setLoading(true);
+    setError("");
+
     try {
-      const res = await axios.post("/user/signup", data);
-      if (res.status === 201) {
-        toast.success("Signup Successful!");
+      console.log("Submitting signup data:", data);
+      const response = await authAPI.signup({
+        name: data.name,
+        email: data.email,
+        password: data.password,
+      });
+      console.log("Signup response:", response);
+
+      if (response.data) {
+        toast.success("Signup Successful! Please log in.");
         navigate("/login");
+      } else {
+        throw new Error("Invalid response from server");
       }
     } catch (error) {
-      console.error("Signup error", error.response?.data);
-      toast.error("Signup failed. Please try again.");
+      console.error("Signup error:", error);
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Signup failed. Please try again.";
+      setError(errorMessage);
+      toast.error(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <Box
-      sx={{
-        height: "100vh",
-        width: "100vw",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        background: "#FFFFF",
-      }}
-    >
-      <Paper
-        elevation={3} // Subtle elevation for professionalism
-        sx={{
-          padding: 4,
-          borderRadius: "12px",
-          width: "100%",
-          maxWidth: 400,
-          textAlign: "center",
-          backgroundColor: "#FFFFFF",
-          border: "1px solid #E2E8F0", // Light gray border
-        }}
-      >
-        <Typography
-          variant="h5"
-          sx={{
-            fontFamily: "'Montserrat', sans-serif",
-            fontWeight: 600,
-            color: "#2D3748", // Dark slate
-            mb: 1,
-          }}
-        >
-          Sign Up
-        </Typography>
-        <Box
-          component="form"
-          onSubmit={handleSubmit(submitHandler)}
-          sx={{ display: "flex", flexDirection: "column", gap: 3 }}
-        >
-          <TextField
-            {...register("name", { required: true })}
-            label="Full Name"
-            variant="outlined"
-            fullWidth
-            sx={{
-              "& .MuiInputBase-root": { borderRadius: "6px" },
-              "& .MuiInputBase-input": { color: "#2D3748", fontFamily: "'Montserrat', sans-serif" },
-              "& .MuiOutlinedInput-notchedOutline": { borderColor: "#CBD5E0" }, // Light gray border
-              "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#3182CE" }, // Blue on hover
-              "& .MuiInputLabel-root": { color: "#4A5568" },
-              "& .Mui-focused .MuiInputLabel-root": { color: "#3182CE" }, // Blue when focused
-              "& .Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: "#3182CE" },
-            }}
-          />
-          <TextField
-            {...register("email", { required: true })}
-            label="Email"
-            type="email"
-            variant="outlined"
-            fullWidth
-            sx={{
-              "& .MuiInputBase-root": { borderRadius: "6px" },
-              "& .MuiInputBase-input": { color: "#2D3748", fontFamily: "'Montserrat', sans-serif" },
-              "& .MuiOutlinedInput-notchedOutline": { borderColor: "#CBD5E0" }, // Light gray border
-              "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#3182CE" }, // Blue on hover
-              "& .MuiInputLabel-root": { color: "#4A5568" },
-              "& .Mui-focused .MuiInputLabel-root": { color: "#3182CE" }, // Blue when focused
-              "& .Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: "#3182CE" },
-            }}
-          />
-          <TextField
-            {...register("password", { required: true })}
-            label="Password"
-            type={showPassword ? "text" : "password"}
-            variant="outlined"
-            fullWidth
-            sx={{
-              "& .MuiInputBase-root": { borderRadius: "6px" },
-              "& .MuiInputBase-input": { color: "#2D3748", fontFamily: "'Montserrat', sans-serif" },
-              "& .MuiOutlinedInput-notchedOutline": { borderColor: "#CBD5E0" }, // Light gray border
-              "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#3182CE" }, // Blue on hover
-              "& .MuiInputLabel-root": { color: "#4A5568" },
-              "& .Mui-focused .MuiInputLabel-root": { color: "#3182CE" }, // Blue when focused
-              "& .Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: "#3182CE" },
-            }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton onClick={togglePasswordVisibility} sx={{ color: "#4A5568" }}>
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-          />
-          <TextField
-            {...register("confirmPassword", { required: true })}
-            label="Confirm Password"
-            type={showConfirmPassword ? "text" : "password"}
-            variant="outlined"
-            fullWidth
-            sx={{
-              "& .MuiInputBase-root": { borderRadius: "6px" },
-              "& .MuiInputBase-input": { color: "#2D3748", fontFamily: "'Montserrat', sans-serif" },
-              "& .MuiOutlinedInput-notchedOutline": { borderColor: "#CBD5E0" }, // Light gray border
-              "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#3182CE" }, // Blue on hover
-              "& .MuiInputLabel-root": { color: "#4A5568" },
-              "& .Mui-focused .MuiInputLabel-root": { color: "#3182CE" }, // Blue when focused
-              "& .Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: "#3182CE" },
-            }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton onClick={toggleConfirmPasswordVisibility} sx={{ color: "#4A5568" }}>
-                    {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-          />
+    <Box className="login-container">
+      <Box className="login-card">
+        <Box className="login-header">
+          <img src="/logo.png" alt="Budget Buddy Logo" className="login-logo" />
+          <Typography variant="h4" className="login-title">
+            Create Account
+          </Typography>
+          <Typography variant="body1" className="login-subtitle">
+            Sign up to start managing your finances
+          </Typography>
+        </Box>
+
+        <form onSubmit={handleSubmit(submitHandler)} className="login-form">
+          {error && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {error}
+            </Alert>
+          )}
+
+          <Box className="form-group">
+            <TextField
+              {...register("name", {
+                required: "Name is required",
+                minLength: {
+                  value: 2,
+                  message: "Name must be at least 2 characters",
+                },
+              })}
+              label="Full Name"
+              variant="outlined"
+              fullWidth
+              disabled={loading}
+              error={!!errors.name}
+              helperText={errors.name?.message}
+            />
+          </Box>
+
+          <Box className="form-group">
+            <TextField
+              {...register("email", {
+                required: "Email is required",
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                  message: "Invalid email address",
+                },
+              })}
+              label="Email"
+              type="email"
+              variant="outlined"
+              fullWidth
+              disabled={loading}
+              error={!!errors.email}
+              helperText={errors.email?.message}
+            />
+          </Box>
+
+          <Box className="form-group">
+            <TextField
+              {...register("password", {
+                required: "Password is required",
+                minLength: {
+                  value: 6,
+                  message: "Password must be at least 6 characters",
+                },
+              })}
+              label="Password"
+              type={showPassword ? "text" : "password"}
+              variant="outlined"
+              fullWidth
+              disabled={loading}
+              error={!!errors.password}
+              helperText={errors.password?.message}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={togglePasswordVisibility}
+                      disabled={loading}
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Box>
+
+          <Box className="form-group">
+            <TextField
+              {...register("confirmPassword", {
+                required: "Please confirm your password",
+                validate: (value) =>
+                  value === watch("password") || "Passwords do not match",
+              })}
+              label="Confirm Password"
+              type={showConfirmPassword ? "text" : "password"}
+              variant="outlined"
+              fullWidth
+              disabled={loading}
+              error={!!errors.confirmPassword}
+              helperText={errors.confirmPassword?.message}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={toggleConfirmPasswordVisibility}
+                      disabled={loading}
+                    >
+                      {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Box>
+
           <Button
             type="submit"
             variant="contained"
-            sx={{
-              backgroundColor: "#3182CE", // Professional blue
-              color: "#FFFFFF",
-              fontFamily: "'Montserrat', sans-serif",
-              fontWeight: 600,
-              borderRadius: "6px",
-              padding: "10px 0",
-              textTransform: "none", // Avoid uppercase for a softer look
-              "&:hover": {
-                backgroundColor: "#2B6CB0", // Darker blue on hover
-                transition: "background-color 0.3s ease",
-              },
-            }}
+            className="login-button"
+            disabled={loading}
+            fullWidth
           >
-            Sign Up
+            {loading ? (
+              <CircularProgress size={24} color="inherit" />
+            ) : (
+              "Sign Up"
+            )}
           </Button>
-          <Typography
-            variant="body2"
-            sx={{ color: "#4A5568", fontFamily: "'Montserrat', sans-serif", mt: 2 }}
-          >
-            Already have an account?{" "}
-            <span
-              style={{
-                color: "#4A5568",
-                cursor: "pointer",
-                fontWeight: "bold",
-                textDecoration: "underline",
-              }}
-              onClick={() => navigate("/login")}
-            >
-              Login
-            </span>
+        </form>
+
+        <Box className="login-footer">
+          <Typography variant="body2">
+            Already have an account? <Link to="/login">Sign in here</Link>
           </Typography>
         </Box>
-      </Paper>
+      </Box>
     </Box>
   );
 };

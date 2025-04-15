@@ -1,165 +1,208 @@
 import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import { TextField, Button, Typography, Paper, Box, IconButton, InputAdornment } from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  Box,
+  TextField,
+  Button,
+  Typography,
+  IconButton,
+  InputAdornment,
+  Alert,
+  CircularProgress,
+} from "@mui/material";
+import {
+  Visibility,
+  VisibilityOff,
+  Google,
+  Facebook,
+  GitHub,
+} from "@mui/icons-material";
+import { authAPI } from "../utils/api";
+import { saveUserData } from "../utils/auth";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import "../../assets/css/login.css";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { register, handleSubmit } = useForm();
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const togglePasswordVisibility = () => setShowPassword(!showPassword);
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    setError("");
+  };
 
-  const submitHandler = async (data) => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
     try {
-      const res = await axios.post("/user/login", data);
-      if (res.status === 200) {
-        localStorage.setItem("id", res.data.data._id);
-        toast.success("Login Successful!");
-        navigate("/dashboard");
+      const response = await authAPI.login(formData);
+      console.log("Login response:", response);
+
+      if (response.data) {
+        const { token, user } = response.data;
+
+        if (!token || !user) {
+          throw new Error("Invalid response format");
+        }
+
+        // Save user data and token
+        const saved = saveUserData(user, token, user.role || "user");
+
+        if (saved) {
+          toast.success("Login successful!");
+          navigate("/dashboard");
+        } else {
+          throw new Error("Failed to save user data");
+        }
+      } else {
+        throw new Error("Invalid response from server");
       }
+    } catch (err) {
+      console.error("Login error:", err);
+      const errorMessage =
+        err.response?.data?.message ||
+        err.message ||
+        "Invalid email or password";
+      setError(errorMessage);
+      toast.error(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSocialLogin = async (provider) => {
+    try {
+      window.location.href = `http://localhost:4000/api/auth/${provider}`;
     } catch (error) {
-      console.error("Login error", error.response?.data);
-      toast.error("Invalid credentials. Please try again.");
+      console.error("Social login error", error);
+      setError(`Error connecting to ${provider}`);
+      toast.error(`Failed to connect to ${provider}`);
     }
   };
 
   return (
-    <Box
-      sx={{
-        height: "100vh",
-        width: "100vw",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#FFFFFF", // Clean white background
-      }}
-    >
-      <Paper
-        elevation={3} // Subtle elevation for professionalism
-        sx={{
-          padding: 4,
-          borderRadius: "12px",
-          width: "100%",
-          maxWidth: 400,
-          textAlign: "center",
-          backgroundColor: "#FFFFFF",
-          border: "1px solid #E2E8F0", // Light gray border
-        }}
-      >
-        {/* Branding */}
-        <Typography
-          variant="h5"
-          sx={{
-            fontFamily: "'Montserrat', sans-serif",
-            fontWeight: 600,
-            color: "#2D3748", // Dark slate
-            mb: 1,
-          }}
-        >
-          Log In
-        </Typography>
-        <Typography
-          variant="body2"
-          sx={{
-            fontFamily: "'Montserrat', sans-serif",
-            color: "#4A5568", // Gray
-            mb: 3,
-          }}
-        >
-          Log in to manage your finances
-        </Typography>
+    <Box className="login-container">
+      <Box className="login-card">
+        <Box className="login-header">
+          <img src="/logo.png" alt="Budget Buddy Logo" className="login-logo" />
+          <Typography variant="h4" className="login-title">
+            Welcome Back
+          </Typography>
+          <Typography variant="body1" className="login-subtitle">
+            Sign in to continue managing your finances
+          </Typography>
+        </Box>
 
-        <Box
-          component="form"
-          onSubmit={handleSubmit(submitHandler)}
-          sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}
-        >
-          <TextField
-            {...register("email", { required: true })}
-            label="Email"
-            type="email"
-            variant="outlined"
-            fullWidth
-            sx={{
-              "& .MuiInputBase-root": { borderRadius: "6px" },
-              "& .MuiInputBase-input": { color: "#2D3748", fontFamily: "'Montserrat', sans-serif" },
-              "& .MuiOutlinedInput-notchedOutline": { borderColor: "#CBD5E0" }, // Light gray border
-              "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#3182CE" }, // Blue on hover
-              "& .MuiInputLabel-root": { color: "#4A5568" },
-              "& .Mui-focused .MuiInputLabel-root": { color: "#3182CE" }, // Blue when focused
-              "& .Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: "#3182CE" },
-            }}
-          />
-          <TextField
-            {...register("password", { required: true })}
-            label="Password"
-            type={showPassword ? "text" : "password"}
-            variant="outlined"
-            fullWidth
-            sx={{
-              "& .MuiInputBase-root": { borderRadius: "6px" },
-              "& .MuiInputBase-input": { color: "#2D3748", fontFamily: "'Montserrat', sans-serif" },
-              "& .MuiOutlinedInput-notchedOutline": { borderColor: "#CBD5E0" },
-              "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#3182CE" },
-              "& .MuiInputLabel-root": { color: "#4A5568" },
-              "& .Mui-focused .MuiInputLabel-root": { color: "#3182CE" },
-              "& .Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: "#3182CE" },
-            }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton onClick={togglePasswordVisibility} sx={{ color: "#4A5568" }}>
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-          />
+        <form onSubmit={handleSubmit} className="login-form">
+          {error && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {error}
+            </Alert>
+          )}
+
+          <Box className="form-group">
+            <TextField
+              name="email"
+              label="Email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+              variant="outlined"
+              fullWidth
+              required
+              disabled={loading}
+              error={!!error}
+            />
+          </Box>
+
+          <Box className="form-group">
+            <TextField
+              name="password"
+              label="Password"
+              type={showPassword ? "text" : "password"}
+              value={formData.password}
+              onChange={handleChange}
+              variant="outlined"
+              fullWidth
+              required
+              disabled={loading}
+              error={!!error}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => setShowPassword(!showPassword)}
+                      disabled={loading}
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Box>
+
           <Button
             type="submit"
             variant="contained"
-            sx={{
-              backgroundColor: "#3182CE", // Professional blue
-              color: "#FFFFFF",
-              fontFamily: "'Montserrat', sans-serif",
-              fontWeight: 600,
-              borderRadius: "6px",
-              padding: "10px 0",
-              textTransform: "none", // Avoid uppercase for a softer look
-              "&:hover": {
-                backgroundColor: "#2B6CB0", // Darker blue on hover
-                transition: "background-color 0.3s ease",
-              },
-            }}
-            onClick={() => navigate("/landingpage")}
+            className="login-button"
+            disabled={loading}
+            fullWidth
           >
-            Log In
+            {loading ? (
+              <CircularProgress size={24} color="inherit" />
+            ) : (
+              "Sign In"
+            )}
           </Button>
-          <Typography
-            variant="body2"
-            sx={{ color: "#4A5568", fontFamily: "'Montserrat', sans-serif", mt: 2 }}
+        </form>
+
+        <Box className="login-divider">
+          <Typography variant="body2">Or continue with</Typography>
+        </Box>
+
+        <Box className="social-login">
+          <IconButton
+            onClick={() => handleSocialLogin("google")}
+            className="social-button"
+            disabled={loading}
           >
-            Don’t have an account?{" "}
-            <span
-              style={{
-                color: "#3182CE",
-                cursor: "pointer",
-                fontWeight: 600,
-                textDecoration: "underline",
-              }}
-              onClick={() => navigate("/signup")}
-            >
-              Sign Up
-            </span>
-            toast.success({"You have successfully login!"})
+            <Google />
+          </IconButton>
+          <IconButton
+            onClick={() => handleSocialLogin("facebook")}
+            className="social-button"
+            disabled={loading}
+          >
+            <Facebook />
+          </IconButton>
+          <IconButton
+            onClick={() => handleSocialLogin("github")}
+            className="social-button"
+            disabled={loading}
+          >
+            <GitHub />
+          </IconButton>
+        </Box>
+
+        <Box className="login-footer">
+          <Typography variant="body2">
+            Don&apos;t have an account? <Link to="/signup">Sign up here</Link>
           </Typography>
         </Box>
-      </Paper>
+      </Box>
     </Box>
   );
 };

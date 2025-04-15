@@ -1,43 +1,48 @@
-// import { Box, Typography } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { Box, Typography } from "@mui/material";
 
-export const ExpenceList = () => {
-    const columns =[
-        {field:"_id",headerName:"ID",width:90},
-        {field:"expenceDate",headerName:"Expence Date",width:150},
-        {field:"expenceCategory",headerName:"Expence Category",width:150},
-        {field:"expenceDescription",headerName:"Expence Description",width:150},
-        {field:"expenceAmount",headerName:"Expence Amount",width:150},
-        {field:"expencePaymentMethod",headerName:"Expence Payment Method",width:150},
-        {field:"expenceStatus",headerName:"Expence Status",width:150},
-    ]
-    const [expences, setexpences] = useState([])
+export const ExpenseList = () => {
+  const [expenses, setExpenses] = useState([]);
 
-    const getAllExpences = async()=>{
+  const columns = [
+    { field: "_id", headerName: "ID", width: 90 },
+    { field: "expenseDate", headerName: "Date", width: 130 },
+    { field: "expenseCategory", headerName: "Category", width: 150 },
+    { field: "expenseDescription", headerName: "Description", width: 200 },
+    { field: "expenseAmount", headerName: "Amount", width: 120 },
+    { field: "expensePaymentMethod", headerName: "Payment Method", width: 150 },
+    { field: "expenseStatus", headerName: "Status", width: 130 },
+  ];
 
-        const res = await axios.get("/expence/all")
-        setexpences(res.data.data)
-
-
+  const getAllExpenses = async () => {
+    try {
+      const res = await axios.get("/api/expenses/getallexpenses");
+      setExpenses(res.data.data);
+    } catch (error) {
+      console.error("Failed to fetch expenses:", error);
     }
-    useEffect(() => {
-      
-    
-      getAllExpences()
-    }, [])
+  };
+
+  useEffect(() => {
+    getAllExpenses();
+  }, []);
 
   return (
-    <div style={{ textAlign: "center" }}>
+    <Box sx={{ height: 400, width: '100%', mt: 4 }}>
+      <Typography variant="h5" sx={{ mb: 2, fontWeight: 600 }}>
+        All Expenses
+      </Typography>
       <DataGrid
-        rows={expences}
+        rows={expenses}
         columns={columns}
         pageSize={5}
         rowsPerPageOptions={[5]}
         checkboxSelection
         getRowId={(row) => row._id}
-      ></DataGrid>
-    </div>
+        sx={{ backgroundColor: "#FFFFFF", borderRadius: 2 }}
+      />
+    </Box>
   );
 };
